@@ -226,6 +226,9 @@ export function ProductForm({
           </div>
         )}
 
+        <p className="mb-1 mt-2 text-xs font-medium text-neutral-600">
+          Ou envie uma foto do seu computador (sobrepõe a escolhida acima):
+        </p>
         <input name="image" type="file" accept="image/*" className="text-sm" />
         <input type="hidden" name="chosen_image_url" value={imagemEscolhida ?? ""} />
       </div>
