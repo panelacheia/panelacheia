@@ -12,7 +12,7 @@ export function Header() {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2">
         <Link href="/" className="flex items-center">
           <Image
-            src="/logos/panelacheia.jpg"
+            src="/logos/panelacheia.png"
             alt="Panela Cheia Supermercado"
             width={1600}
             height={828}
