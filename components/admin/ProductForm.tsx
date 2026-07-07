@@ -20,6 +20,7 @@ export function ProductForm({
   const [buscandoFotos, setBuscandoFotos] = useState(false);
   const [selecionando, setSelecionando] = useState<string | null>(null);
   const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
+  const [preview, setPreview] = useState<ImageResult | null>(null);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -58,6 +59,7 @@ export function ProductForm({
       if (!res.ok) throw new Error(data.error ?? "Não foi possível salvar essa imagem.");
       setImagemEscolhida(data.url);
       setResultados([]);
+      setPreview(null);
     } catch (e) {
       setErro(e instanceof Error ? e.message : "Não foi possível salvar essa imagem.");
     } finally {
@@ -158,7 +160,7 @@ export function ProductForm({
               <button
                 key={r.original}
                 type="button"
-                onClick={() => handleEscolherFoto(r.original)}
+                onClick={() => setPreview(r)}
                 disabled={selecionando !== null}
                 title={r.title}
                 className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary disabled:opacity-50"
@@ -172,6 +174,43 @@ export function ProductForm({
                 )}
               </button>
             ))}
+          </div>
+        )}
+
+        {preview && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setPreview(null)}
+          >
+            <div
+              className="flex max-h-full max-w-lg flex-col gap-3 rounded-xl bg-white p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={preview.original}
+                alt={preview.title}
+                className="max-h-[60vh] w-full rounded-lg object-contain"
+              />
+              {preview.title && <p className="text-xs text-neutral-500">{preview.title}</p>}
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPreview(null)}
+                  className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
+                >
+                  Voltar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleEscolherFoto(preview.original)}
+                  disabled={selecionando !== null}
+                  className="rounded-lg bg-brand-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
+                >
+                  {selecionando === preview.original ? "Salvando..." : "Usar esta imagem"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
