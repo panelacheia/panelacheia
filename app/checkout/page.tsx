@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/lib/cart/cartStore";
@@ -31,6 +31,49 @@ export default function CheckoutPage() {
   const [endereco, setEndereco] = useState<EnderecoEntrega>(ENDERECO_VAZIO);
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [entregaFeeCents, setEntregaFeeCents] = useState<number | null>(null);
+  const [calculandoFrete, setCalculandoFrete] = useState(false);
+
+  const enderecoParaFrete =
+    fulfillmentType === "entrega" &&
+    endereco.street &&
+    endereco.number &&
+    endereco.city &&
+    endereco.state;
+
+  useEffect(() => {
+    if (!enderecoParaFrete) {
+      setEntregaFeeCents(null);
+      return;
+    }
+
+    setCalculandoFrete(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/delivery-fee", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(endereco),
+        });
+        if (res.ok) {
+          const data = (await res.json()) as { feeCents: number };
+          setEntregaFeeCents(data.feeCents);
+        }
+      } finally {
+        setCalculandoFrete(false);
+      }
+    }, 700);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    enderecoParaFrete,
+    endereco.street,
+    endereco.number,
+    endereco.neighborhood,
+    endereco.city,
+    endereco.state,
+  ]);
 
   const enderecoCompleto =
     fulfillmentType === "retirada" ||
@@ -152,7 +195,13 @@ export default function CheckoutPage() {
           <PaymentMethodSelect value={paymentMethod} onChange={setPaymentMethod} />
         </div>
 
-        <OrderSummary items={items} subtotalCents={subtotalCents} fulfillmentType={fulfillmentType} />
+        <OrderSummary
+          items={items}
+          subtotalCents={subtotalCents}
+          fulfillmentType={fulfillmentType}
+          entregaFeeCents={entregaFeeCents}
+          calculandoFrete={calculandoFrete}
+        />
 
         {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
 

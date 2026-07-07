@@ -7,12 +7,17 @@ export function OrderSummary({
   items,
   subtotalCents,
   fulfillmentType,
+  entregaFeeCents,
+  calculandoFrete,
 }: {
   items: CartItem[];
   subtotalCents: number;
   fulfillmentType: FulfillmentType;
+  entregaFeeCents?: number | null;
+  calculandoFrete?: boolean;
 }) {
-  const feeConhecida = fulfillmentType === "retirada" ? RETIRADA_FEE_CENTS : null;
+  const feeConhecida =
+    fulfillmentType === "retirada" ? RETIRADA_FEE_CENTS : entregaFeeCents ?? null;
 
   return (
     <div className="rounded-xl border border-black/5 bg-white p-4 shadow-sm">
@@ -39,7 +44,9 @@ export function OrderSummary({
         <span>
           {feeConhecida !== null
             ? formatarCentavos(feeConhecida)
-            : "calculada ao confirmar"}
+            : calculandoFrete
+              ? "calculando..."
+              : "calculada ao confirmar"}
         </span>
       </div>
 
