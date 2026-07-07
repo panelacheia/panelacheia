@@ -18,25 +18,19 @@ async function uploadImageIfPresent(
   formData: FormData
 ): Promise<string | null> {
   const file = formData.get("image") as File | null;
-  if (file && file.size > 0) {
-    const ext = file.name.split(".").pop();
-    const path = `${crypto.randomUUID()}.${ext}`;
+  if (!file || file.size === 0) return null;
 
-    const { error } = await supabase.storage.from("product-images").upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
-    if (error) throw new Error(`Falha ao enviar imagem: ${error.message}`);
+  const ext = file.name.split(".").pop();
+  const path = `${crypto.randomUUID()}.${ext}`;
 
-    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-    return data.publicUrl;
-  }
+  const { error } = await supabase.storage.from("product-images").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+  if (error) throw new Error(`Falha ao enviar imagem: ${error.message}`);
 
-  // Imagem já resolvida e enviada ao bucket pela busca automática (ver ProductForm).
-  const autoUrl = formData.get("auto_image_url");
-  if (typeof autoUrl === "string" && autoUrl.length > 0) return autoUrl;
-
-  return null;
+  const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+  return data.publicUrl;
 }
 
 function parseProductFields(formData: FormData) {
