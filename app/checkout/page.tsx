@@ -44,6 +44,18 @@ export default function CheckoutPage() {
     enderecoCompleto &&
     !submitting;
 
+  const camposFaltando: string[] = [];
+  if (!customerName.trim()) camposFaltando.push("Seu nome");
+  if (!customerPhone.trim()) camposFaltando.push("Telefone / WhatsApp");
+  if (fulfillmentType === "entrega") {
+    if (!endereco.street) camposFaltando.push("Rua");
+    if (!endereco.number) camposFaltando.push("Número");
+    if (!endereco.neighborhood) camposFaltando.push("Bairro");
+    if (!endereco.city) camposFaltando.push("Cidade");
+    if (!endereco.state) camposFaltando.push("UF");
+  }
+  if (!paymentMethod) camposFaltando.push("Forma de pagamento");
+
   async function handleSubmit() {
     if (!podeEnviar || !paymentMethod) return;
     setSubmitting(true);
@@ -143,6 +155,12 @@ export default function CheckoutPage() {
         <OrderSummary items={items} subtotalCents={subtotalCents} fulfillmentType={fulfillmentType} />
 
         {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
+
+        {!podeEnviar && !submitting && camposFaltando.length > 0 && (
+          <p className="text-sm text-brand-secondary">
+            Preencha para continuar: {camposFaltando.join(", ")}
+          </p>
+        )}
 
         <button
           type="button"
