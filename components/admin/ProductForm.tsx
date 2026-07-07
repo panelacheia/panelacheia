@@ -87,7 +87,7 @@ export function ProductForm({
     "w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none";
 
   return (
-    <form action={handleSubmit} className="flex max-w-lg flex-col gap-3">
+    <form action={handleSubmit} className="flex flex-col gap-3">
       <div>
         <label className="mb-1 block text-xs font-medium text-neutral-600">Nome</label>
         <input

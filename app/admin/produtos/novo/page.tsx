@@ -8,9 +8,11 @@ export default async function NovoProdutoPage() {
   const { data: categories } = await supabase.from("category").select("*").order("name");
 
   return (
-    <div>
+    <div className="mx-auto max-w-2xl">
       <h1 className="mb-4 text-xl font-bold">Novo produto</h1>
-      <ProductForm categories={(categories ?? []) as Category[]} action={createProduct} />
+      <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <ProductForm categories={(categories ?? []) as Category[]} action={createProduct} />
+      </div>
     </div>
   );
 }

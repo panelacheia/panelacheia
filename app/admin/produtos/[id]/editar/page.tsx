@@ -19,13 +19,15 @@ export default async function EditarProdutoPage({
   const updateWithId = updateProduct.bind(null, id);
 
   return (
-    <div>
+    <div className="mx-auto max-w-2xl">
       <h1 className="mb-4 text-xl font-bold">Editar produto</h1>
-      <ProductForm
-        product={product as Product}
-        categories={(categories ?? []) as Category[]}
-        action={updateWithId}
-      />
+      <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        <ProductForm
+          product={product as Product}
+          categories={(categories ?? []) as Category[]}
+          action={updateWithId}
+        />
+      </div>
     </div>
   );
 }
