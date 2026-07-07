@@ -28,6 +28,7 @@ export type CartItem = {
   unit: string;
   unitPriceCents: number;
   quantity: number;
+  imageUrl: string | null;
 };
 
 export type GeocodeStatus = "n/a" | "ok" | "failed" | "manual";

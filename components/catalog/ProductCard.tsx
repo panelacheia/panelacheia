@@ -18,6 +18,7 @@ export function ProductCard({ product }: { product: Product }) {
       unit: product.unit,
       unitPriceCents: product.price_cents,
       quantity,
+      imageUrl: product.image_url,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);

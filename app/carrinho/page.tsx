@@ -31,6 +31,19 @@ export default function CarrinhoPage() {
             key={item.productId}
             className="flex items-center gap-3 rounded-xl border border-black/5 bg-white p-3 shadow-sm"
           >
+            {item.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={item.imageUrl}
+                alt=""
+                className="h-14 w-14 shrink-0 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-2xl">
+                🛒
+              </div>
+            )}
+
             <div className="flex-1">
               <p className="text-sm font-medium">{item.name}</p>
               <p className="text-xs text-neutral-500">
