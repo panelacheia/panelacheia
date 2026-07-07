@@ -1,7 +1,10 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { PaymentStatusSelect } from "@/components/admin/PaymentStatusSelect";
+import { InternalNotesField } from "@/components/admin/InternalNotesField";
 import type { PaymentStatus } from "@/lib/types";
 
 export default async function PedidoDetailPage({
@@ -19,6 +22,13 @@ export default async function PedidoDetailPage({
 
   return (
     <div className="max-w-2xl">
+      <Link
+        href="/admin/pedidos"
+        className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-neutral-500 hover:text-brand-primary"
+      >
+        <ArrowLeft size={16} /> Voltar para Pedidos
+      </Link>
+
       <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-xl font-bold">Pedido #{order.order_number}</h1>
         <PaymentStatusSelect id={order.id} status={order.payment_status as PaymentStatus} />
@@ -68,10 +78,12 @@ export default async function PedidoDetailPage({
         </div>
       </div>
 
-      <div className="rounded-xl border border-neutral-200 bg-white p-4">
+      <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4">
         <h2 className="mb-2 text-sm font-semibold text-neutral-600">Mensagem enviada no WhatsApp</h2>
         <pre className="whitespace-pre-wrap text-sm text-neutral-700">{order.whatsapp_message}</pre>
       </div>
+
+      <InternalNotesField id={order.id} initialNotes={order.internal_notes ?? ""} />
     </div>
   );
 }

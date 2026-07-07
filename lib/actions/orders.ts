@@ -25,3 +25,14 @@ export async function updatePaymentStatus(id: string, paymentStatus: PaymentStat
   revalidatePath("/admin/pedidos");
   revalidatePath(`/admin/pedidos/${id}`);
 }
+
+export async function updateInternalNotes(id: string, notes: string) {
+  const supabase = await requireStaff();
+  const { error } = await supabase
+    .from("order")
+    .update({ internal_notes: notes })
+    .eq("id", id);
+  if (error) throw new Error(`Não foi possível salvar a observação: ${error.message}`);
+
+  revalidatePath(`/admin/pedidos/${id}`);
+}
