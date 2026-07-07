@@ -92,12 +92,20 @@ export default function CarrinhoPage() {
         <span className="text-lg font-bold">{formatarCentavos(subtotalCents)}</span>
       </div>
 
-      <Link
-        href="/checkout"
-        className="mt-4 block rounded-xl bg-brand-primary px-4 py-3 text-center font-semibold text-white hover:bg-brand-primary-dark"
-      >
-        Continuar para o pedido
-      </Link>
+      <div className="mt-4 flex flex-col gap-2">
+        <Link
+          href="/checkout"
+          className="block rounded-xl bg-brand-primary px-4 py-3 text-center font-semibold text-white hover:bg-brand-primary-dark"
+        >
+          Finalizar pedido
+        </Link>
+        <Link
+          href="/"
+          className="block rounded-xl border border-brand-primary px-4 py-3 text-center font-semibold text-brand-primary hover:bg-brand-primary/5"
+        >
+          Adicionar mais produtos
+        </Link>
+      </div>
     </div>
   );
 }
