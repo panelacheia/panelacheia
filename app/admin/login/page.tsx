@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
           placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+          className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
         />
         <input
           type="password"
@@ -47,13 +47,13 @@ export default function AdminLoginPage() {
           placeholder="Senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+          className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
         />
-        {erro && <p className="text-sm text-brand-red">{erro}</p>}
+        {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
         <button
           type="submit"
           disabled={carregando}
-          className="rounded-lg bg-brand-green px-4 py-2 font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60"
+          className="rounded-lg bg-brand-primary px-4 py-2 font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
         >
           {carregando ? "Entrando..." : "Entrar"}
         </button>

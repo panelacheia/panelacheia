@@ -13,7 +13,7 @@ export default function CarrinhoPage() {
         <p className="text-lg text-neutral-600">Seu carrinho está vazio.</p>
         <Link
           href="/"
-          className="mt-4 inline-block rounded-lg bg-brand-green px-4 py-2 font-semibold text-white hover:bg-brand-green-dark"
+          className="mt-4 inline-block rounded-lg bg-brand-primary px-4 py-2 font-semibold text-white hover:bg-brand-primary-dark"
         >
           Ver produtos
         </Link>
@@ -65,7 +65,7 @@ export default function CarrinhoPage() {
             <button
               type="button"
               onClick={() => removeItem(item.productId)}
-              className="text-neutral-400 hover:text-brand-red"
+              className="text-neutral-400 hover:text-brand-secondary"
               aria-label="Remover item"
             >
               ✕
@@ -81,7 +81,7 @@ export default function CarrinhoPage() {
 
       <Link
         href="/checkout"
-        className="mt-4 block rounded-xl bg-brand-green px-4 py-3 text-center font-semibold text-white hover:bg-brand-green-dark"
+        className="mt-4 block rounded-xl bg-brand-primary px-4 py-3 text-center font-semibold text-white hover:bg-brand-primary-dark"
       >
         Continuar para o pedido
       </Link>

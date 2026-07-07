@@ -35,7 +35,7 @@ export default async function AdminPedidosPage() {
               {orders.map((o) => (
                 <tr key={o.id} className="border-b border-neutral-100 last:border-0">
                   <td className="px-3 py-2">
-                    <Link href={`/admin/pedidos/${o.id}`} className="font-medium text-brand-green hover:underline">
+                    <Link href={`/admin/pedidos/${o.id}`} className="font-medium text-brand-primary hover:underline">
                       #{o.order_number}
                     </Link>
                   </td>

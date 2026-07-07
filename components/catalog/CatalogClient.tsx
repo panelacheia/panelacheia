@@ -31,7 +31,7 @@ export function CatalogClient({ products }: { products: Product[] }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar produto (ex: arroz, açúcar, picanha)"
-          className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-green focus:outline-none"
+          className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none"
         />
       </div>
 
@@ -41,7 +41,7 @@ export function CatalogClient({ products }: { products: Product[] }) {
           onClick={() => setCategory(null)}
           className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
             category === null
-              ? "bg-brand-green text-white"
+              ? "bg-brand-primary text-white"
               : "bg-white text-neutral-700 border border-neutral-300"
           }`}
         >
@@ -54,7 +54,7 @@ export function CatalogClient({ products }: { products: Product[] }) {
             onClick={() => setCategory(cat)}
             className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
               category === cat
-                ? "bg-brand-green text-white"
+                ? "bg-brand-primary text-white"
                 : "bg-white text-neutral-700 border border-neutral-300"
             }`}
           >

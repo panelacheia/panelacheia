@@ -36,7 +36,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="flex h-full w-full items-center justify-center text-4xl">🛒</div>
         )}
         {product.is_promo && (
-          <span className="absolute left-2 top-2 rounded-md bg-brand-red px-2 py-0.5 text-xs font-bold text-white">
+          <span className="absolute left-2 top-2 rounded-md bg-brand-secondary px-2 py-0.5 text-xs font-bold text-white">
             Promoção
           </span>
         )}
@@ -48,7 +48,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-xs text-neutral-500">{product.unit}</p>
         </div>
 
-        <p className="mt-auto text-lg font-bold text-brand-green-dark">
+        <p className="mt-auto text-lg font-bold text-brand-primary-dark">
           {formatarCentavos(product.price_cents)}
         </p>
 
@@ -76,7 +76,7 @@ export function ProductCard({ product }: { product: Product }) {
           <button
             type="button"
             onClick={handleAdd}
-            className="flex-1 rounded-lg bg-brand-green px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-green-dark"
+            className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
           >
             {added ? "Adicionado ✓" : "Adicionar"}
           </button>

@@ -25,7 +25,7 @@ export function ProductForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none";
+    "w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none";
 
   return (
     <form action={handleSubmit} className="flex max-w-lg flex-col gap-3">
@@ -91,12 +91,12 @@ export function ProductForm({
         </label>
       </div>
 
-      {erro && <p className="text-sm text-brand-red">{erro}</p>}
+      {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
 
       <button
         type="submit"
         disabled={isPending}
-        className="mt-2 rounded-lg bg-brand-green px-4 py-2 font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60"
+        className="mt-2 rounded-lg bg-brand-primary px-4 py-2 font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
       >
         {isPending ? "Salvando..." : "Salvar"}
       </button>

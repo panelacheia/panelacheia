@@ -23,11 +23,11 @@ export function ProductsPageClient({ products }: { products: Product[] }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar produto..."
-          className="w-full max-w-xs rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+          className="w-full max-w-xs rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
         />
         <Link
           href="/admin/produtos/novo"
-          className="whitespace-nowrap rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white hover:bg-brand-green-dark"
+          className="whitespace-nowrap rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary-dark"
         >
           + Novo Produto
         </Link>

@@ -24,7 +24,7 @@ export function PaymentMethodSelect({
           onClick={() => onChange(opt.value)}
           className={`rounded-xl border px-2 py-3 text-sm font-semibold ${
             value === opt.value
-              ? "border-brand-green bg-brand-green text-white"
+              ? "border-brand-primary bg-brand-primary text-white"
               : "border-neutral-300 bg-white text-neutral-700"
           }`}
         >

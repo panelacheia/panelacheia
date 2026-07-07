@@ -48,7 +48,7 @@ export default function ConfirmacaoPage({
           href={pedido.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-block rounded-xl bg-brand-green px-5 py-3 font-semibold text-white hover:bg-brand-green-dark"
+          className="mt-4 inline-block rounded-xl bg-brand-primary px-5 py-3 font-semibold text-white hover:bg-brand-primary-dark"
         >
           Enviar pedido no WhatsApp
         </a>

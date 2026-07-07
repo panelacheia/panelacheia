@@ -3,17 +3,17 @@
 :root {
   --background: #f7f7f5;
   --foreground: #1c1c1c;
-  --brand-green: #16693a;
-  --brand-green-dark: #0f4c29;
-  --brand-red: #d81f26;
+  --brand-primary: #0d3888;
+  --brand-primary-dark: #092a66;
+  --brand-secondary: #b31617;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-green: var(--brand-green);
-  --color-brand-green-dark: var(--brand-green-dark);
-  --color-brand-red: var(--brand-red);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-brand-secondary: var(--brand-secondary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

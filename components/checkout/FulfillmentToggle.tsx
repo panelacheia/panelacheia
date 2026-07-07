@@ -16,7 +16,7 @@ export function FulfillmentToggle({
         onClick={() => onChange("retirada")}
         className={`rounded-xl border px-4 py-3 text-sm font-semibold ${
           value === "retirada"
-            ? "border-brand-green bg-brand-green text-white"
+            ? "border-brand-primary bg-brand-primary text-white"
             : "border-neutral-300 bg-white text-neutral-700"
         }`}
       >
@@ -27,7 +27,7 @@ export function FulfillmentToggle({
         onClick={() => onChange("entrega")}
         className={`rounded-xl border px-4 py-3 text-sm font-semibold ${
           value === "entrega"
-            ? "border-brand-green bg-brand-green text-white"
+            ? "border-brand-primary bg-brand-primary text-white"
             : "border-neutral-300 bg-white text-neutral-700"
         }`}
       >

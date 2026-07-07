@@ -96,7 +96,7 @@ export default function CheckoutPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
         <p className="text-lg text-neutral-600">Seu carrinho está vazio.</p>
-        <Link href="/" className="mt-4 inline-block rounded-lg bg-brand-green px-4 py-2 font-semibold text-white">
+        <Link href="/" className="mt-4 inline-block rounded-lg bg-brand-primary px-4 py-2 font-semibold text-white">
           Ver produtos
         </Link>
       </div>
@@ -108,7 +108,7 @@ export default function CheckoutPage() {
       <h1 className="mb-4 text-xl font-bold">Finalizar pedido</h1>
 
       {!lojaAberta && (
-        <div className="mb-4 rounded-xl border border-brand-red/30 bg-brand-red/10 p-3 text-sm text-brand-red">
+        <div className="mb-4 rounded-xl border border-brand-secondary/30 bg-brand-secondary/10 p-3 text-sm text-brand-secondary">
           Estamos fechados no momento. Reabrimos {proximoHorarioTexto()}. Você pode montar seu
           pedido, mas só poderá enviá-lo quando reabrirmos.
         </div>
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Seu nome</label>
           <input
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Nome completo"
@@ -128,7 +128,7 @@ export default function CheckoutPage() {
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Telefone / WhatsApp</label>
           <input
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-green focus:outline-none"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
             placeholder="(14) 90000-0000"
@@ -154,13 +154,13 @@ export default function CheckoutPage() {
 
         <OrderSummary items={items} subtotalCents={subtotalCents} fulfillmentType={fulfillmentType} />
 
-        {erro && <p className="text-sm text-brand-red">{erro}</p>}
+        {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
 
         <button
           type="button"
           disabled={!podeEnviar}
           onClick={handleSubmit}
-          className="rounded-xl bg-brand-green px-4 py-3 font-semibold text-white hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:bg-neutral-300"
+          className="rounded-xl bg-brand-primary px-4 py-3 font-semibold text-white hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
           {submitting ? "Enviando pedido..." : "Fazer Pedido"}
         </button>

@@ -77,14 +77,14 @@ export function ProductTable({ products }: { products: Product[] }) {
               </td>
               <td className="px-3 py-2 text-right">
                 <div className="flex justify-end gap-3">
-                  <Link href={`/admin/produtos/${p.id}/editar`} className="text-brand-green hover:underline">
+                  <Link href={`/admin/produtos/${p.id}/editar`} className="text-brand-primary hover:underline">
                     Editar
                   </Link>
                   <button
                     type="button"
                     disabled={isPending && busyId === p.id}
                     onClick={() => handleDelete(p.id, p.name)}
-                    className="text-brand-red hover:underline"
+                    className="text-brand-secondary hover:underline"
                   >
                     Excluir
                   </button>
