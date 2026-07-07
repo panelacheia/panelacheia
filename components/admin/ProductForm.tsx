@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import type { Category, Product } from "@/lib/types";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 type ImageResult = { original: string; thumbnail: string; title: string };
 
@@ -27,6 +28,7 @@ export function ProductForm({
   const [arquivoNome, setArquivoNome] = useState<string | null>(null);
   const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
   const [fotoAtualAmpliada, setFotoAtualAmpliada] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -75,11 +77,18 @@ export function ProductForm({
 
   function handleSubmit(formData: FormData) {
     setErro(null);
+    setPendingFormData(formData);
+  }
+
+  function confirmSave() {
+    if (!pendingFormData) return;
     startTransition(async () => {
       try {
-        await action(formData);
+        await action(pendingFormData);
       } catch (e) {
         setErro(e instanceof Error ? e.message : "Erro ao salvar produto.");
+      } finally {
+        setPendingFormData(null);
       }
     });
   }
@@ -331,11 +340,25 @@ export function ProductForm({
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || pendingFormData !== null}
         className="mt-2 rounded-lg bg-brand-primary px-4 py-2 font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
       >
         {isPending ? "Salvando..." : "Salvar"}
       </button>
+
+      <ConfirmDialog
+        open={pendingFormData !== null}
+        title={product ? "Salvar alterações" : "Criar produto"}
+        message={
+          product
+            ? "Deseja salvar as alterações desse produto?"
+            : "Deseja criar esse produto?"
+        }
+        confirmLabel="Salvar"
+        busy={isPending}
+        onConfirm={confirmSave}
+        onCancel={() => setPendingFormData(null)}
+      />
     </form>
   );
 }
