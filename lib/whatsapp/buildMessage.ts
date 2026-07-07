@@ -58,7 +58,7 @@ export function buildWhatsappMessage(params: {
   const blocoEntrega =
     fulfillmentType === "entrega"
       ? [
-          `📦 *Entrega* — ${deliveryAddress ?? ""}`,
+          `*Entrega* — ${deliveryAddress ?? ""}`,
           deliveryDistanceKm != null
             ? `*Distância aprox.:* ${deliveryDistanceKm.toFixed(1)} km`
             : null,
@@ -69,12 +69,12 @@ export function buildWhatsappMessage(params: {
         ]
           .filter(Boolean)
           .join("\n")
-      : ["🏬 *Retirada na loja*", `*Taxa de retirada:* ${formatarCentavos(deliveryFeeCents)}`].join(
+      : ["*Retirada na loja*", `*Taxa de retirada:* ${formatarCentavos(deliveryFeeCents)}`].join(
           "\n"
         );
 
   return [
-    `🛒 *NOVO PEDIDO #${orderNumber} – Panela Cheia*`,
+    `*NOVO PEDIDO #${orderNumber} - Panela Cheia*`,
     "",
     `*Cliente:* ${customerName}`,
     `*Telefone:* ${customerPhone}`,
@@ -86,7 +86,7 @@ export function buildWhatsappMessage(params: {
     "",
     blocoEntrega,
     "",
-    `💳 *Forma de pagamento:* ${NOMES_PAGAMENTO[paymentMethod]}`,
+    `*Forma de pagamento:* ${NOMES_PAGAMENTO[paymentMethod]}`,
     "",
     `*TOTAL: ${formatarCentavos(totalCents)}*`,
   ].join("\n");
