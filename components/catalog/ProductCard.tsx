@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { useCart } from "@/lib/cart/cartStore";
@@ -8,8 +9,8 @@ import { useCart } from "@/lib/cart/cartStore";
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
   const [fotoAmpliada, setFotoAmpliada] = useState(false);
+  const [confirmacaoAberta, setConfirmacaoAberta] = useState(false);
 
   function handleAdd() {
     addItem({
@@ -20,15 +21,9 @@ export function ProductCard({ product }: { product: Product }) {
       quantity,
       imageUrl: product.image_url,
     });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    setFotoAmpliada(false);
+    setConfirmacaoAberta(true);
   }
-
-  useEffect(() => {
-    if (!added || !fotoAmpliada) return;
-    const timer = setTimeout(() => setFotoAmpliada(false), 1500);
-    return () => clearTimeout(timer);
-  }, [added, fotoAmpliada]);
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
@@ -95,41 +90,35 @@ export function ProductCard({ product }: { product: Product }) {
                 )}
               </div>
 
-              {added ? (
-                <p className="rounded-lg bg-brand-primary/10 px-3 py-2 text-center text-sm font-medium text-brand-primary">
-                  Produto adicionado ao carrinho ✓
-                </p>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center rounded-lg border border-neutral-300">
-                    <button
-                      type="button"
-                      className="px-2 py-1 text-neutral-600"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      aria-label="Diminuir quantidade"
-                    >
-                      −
-                    </button>
-                    <span className="min-w-6 text-center text-sm">{quantity}</span>
-                    <button
-                      type="button"
-                      className="px-2 py-1 text-neutral-600"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      aria-label="Aumentar quantidade"
-                    >
-                      +
-                    </button>
-                  </div>
-
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-lg border border-neutral-300">
                   <button
                     type="button"
-                    onClick={handleAdd}
-                    className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+                    className="px-2 py-1 text-neutral-600"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    aria-label="Diminuir quantidade"
                   >
-                    Adicionar
+                    −
+                  </button>
+                  <span className="min-w-6 text-center text-sm">{quantity}</span>
+                  <button
+                    type="button"
+                    className="px-2 py-1 text-neutral-600"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    aria-label="Aumentar quantidade"
+                  >
+                    +
                   </button>
                 </div>
-              )}
+
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+                >
+                  Adicionar
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -178,10 +167,57 @@ export function ProductCard({ product }: { product: Product }) {
             onClick={handleAdd}
             className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
           >
-            {added ? "Adicionado ✓" : "Adicionar"}
+            Adicionar
           </button>
         </div>
       </div>
+
+      {confirmacaoAberta && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+          onClick={() => setConfirmacaoAberta(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-xl bg-white p-5 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center gap-3">
+              {product.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={product.image_url}
+                  alt=""
+                  className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-xl">
+                  🛒
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-brand-primary">Adicionado ao carrinho ✓</p>
+                <p className="truncate text-sm text-neutral-600">{product.name}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/checkout"
+                className="block rounded-lg bg-brand-primary px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-primary-dark"
+              >
+                Finalizar pedido
+              </Link>
+              <button
+                type="button"
+                onClick={() => setConfirmacaoAberta(false)}
+                className="rounded-lg border border-neutral-300 px-4 py-2.5 text-sm font-medium hover:bg-neutral-100"
+              >
+                Continuar comprando
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
