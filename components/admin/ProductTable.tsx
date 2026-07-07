@@ -7,6 +7,7 @@ import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { deleteProduct, toggleProductField } from "@/lib/actions/products";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ImageZoomButton } from "@/components/ui/ImageZoomButton";
 
 export function ProductTable({ products }: { products: Product[] }) {
   const [isPending, startTransition] = useTransition();
@@ -51,8 +52,11 @@ export function ProductTable({ products }: { products: Product[] }) {
               <td className="px-3 py-2">
                 <div className="flex items-center gap-2">
                   {p.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image_url} alt="" className="h-8 w-8 rounded object-cover" />
+                    <ImageZoomButton
+                      src={p.image_url}
+                      alt={p.name}
+                      thumbnailClassName="h-8 w-8 rounded object-cover hover:opacity-80"
+                    />
                   ) : (
                     <div className="h-8 w-8 rounded bg-neutral-100" />
                   )}
