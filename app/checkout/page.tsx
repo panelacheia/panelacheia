@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/lib/cart/cartStore";
@@ -8,7 +8,6 @@ import { FulfillmentToggle } from "@/components/checkout/FulfillmentToggle";
 import { PaymentMethodSelect } from "@/components/checkout/PaymentMethodSelect";
 import { AddressForm, type EnderecoEntrega } from "@/components/checkout/AddressForm";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
-import { lojaEstaAberta, proximoHorarioTexto } from "@/lib/orders/businessHours";
 import type { CreateOrderRequest, CreateOrderResponse, FulfillmentType, PaymentMethod } from "@/lib/types";
 
 const ENDERECO_VAZIO: EnderecoEntrega = {
@@ -33,8 +32,6 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
-  const lojaAberta = useMemo(() => lojaEstaAberta(), []);
-
   const enderecoCompleto =
     fulfillmentType === "retirada" ||
     (endereco.street && endereco.number && endereco.neighborhood && endereco.city && endereco.state);
@@ -45,7 +42,6 @@ export default function CheckoutPage() {
     customerPhone.trim().length > 0 &&
     paymentMethod !== null &&
     enderecoCompleto &&
-    lojaAberta &&
     !submitting;
 
   async function handleSubmit() {
@@ -106,13 +102,6 @@ export default function CheckoutPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <h1 className="mb-4 text-xl font-bold">Finalizar pedido</h1>
-
-      {!lojaAberta && (
-        <div className="mb-4 rounded-xl border border-brand-secondary/30 bg-brand-secondary/10 p-3 text-sm text-brand-secondary">
-          Estamos fechados no momento. Reabrimos {proximoHorarioTexto()}. Você pode montar seu
-          pedido, mas só poderá enviá-lo quando reabrirmos.
-        </div>
-      )}
 
       <div className="flex flex-col gap-4">
         <div>

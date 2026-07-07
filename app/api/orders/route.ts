@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { lojaEstaAberta } from "@/lib/orders/businessHours";
 import { calcularTaxaEntrega, RETIRADA_FEE_CENTS } from "@/lib/orders/fees";
 import { geocodeEndereco } from "@/lib/geo/nominatim";
 import { distanciaAteALojaKm } from "@/lib/geo/haversine";
@@ -9,13 +8,6 @@ import { buildWaLink } from "@/lib/whatsapp/waLink";
 import type { CreateOrderRequest, CreateOrderResponse } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
-  if (!lojaEstaAberta()) {
-    return NextResponse.json(
-      { error: "A loja está fechada no momento. Tente novamente durante o horário de funcionamento." },
-      { status: 409 }
-    );
-  }
-
   const body = (await req.json()) as CreateOrderRequest;
 
   if (!body.items?.length || !body.customerName || !body.customerPhone) {
