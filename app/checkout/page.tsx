@@ -80,7 +80,6 @@ export default function CheckoutPage() {
       );
 
       clear();
-      window.open(data.whatsappUrl, "_blank");
       router.push(`/pedido/${data.orderNumber}/confirmacao`);
     } catch {
       setErro("Não foi possível enviar o pedido. Verifique sua conexão e tente novamente.");

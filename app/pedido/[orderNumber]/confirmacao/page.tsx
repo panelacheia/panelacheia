@@ -40,7 +40,7 @@ export default function ConfirmacaoPage({
       )}
 
       <p className="mt-4 text-sm text-neutral-500">
-        Se o WhatsApp não abriu automaticamente, toque no botão abaixo para enviar seu pedido.
+        Toque no botão abaixo para enviar seu pedido pelo WhatsApp.
       </p>
 
       {pedido && (
