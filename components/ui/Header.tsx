@@ -2,10 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart/cartStore";
 
 export function Header() {
   const { itemCount } = useCart();
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white shadow-sm">
