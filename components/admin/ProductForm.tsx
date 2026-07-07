@@ -26,6 +26,7 @@ export function ProductForm({
   const [preview, setPreview] = useState<ImageResult | null>(null);
   const [arquivoNome, setArquivoNome] = useState<string | null>(null);
   const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
+  const [fotoAtualAmpliada, setFotoAtualAmpliada] = useState(false);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -167,12 +168,42 @@ export function ProductForm({
         </label>
 
         {(imagemEscolhida ?? product?.image_url) && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imagemEscolhida ?? product?.image_url ?? ""}
-            alt=""
-            className="mb-2 h-16 w-16 rounded object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => setFotoAtualAmpliada(true)}
+            className="mb-2 block"
+            aria-label="Ver foto ampliada"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imagemEscolhida ?? product?.image_url ?? ""}
+              alt=""
+              className="h-16 w-16 rounded object-cover ring-1 ring-neutral-200 transition hover:opacity-80"
+            />
+          </button>
+        )}
+
+        {fotoAtualAmpliada && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setFotoAtualAmpliada(false)}
+          >
+            <div className="max-h-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imagemEscolhida ?? product?.image_url ?? ""}
+                alt=""
+                className="max-h-[80vh] w-full rounded-xl bg-white object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setFotoAtualAmpliada(false)}
+                className="mt-3 w-full rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
         )}
 
         <div className="mb-2 flex items-center gap-2">
