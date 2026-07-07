@@ -1,25 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Calendar, Filter } from "lucide-react";
 
 function hojeISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function OrdersFilterBar() {
+export function OrdersFilterBar({
+  defaultFrom,
+  defaultTo,
+}: {
+  defaultFrom: string;
+  defaultTo: string;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const [from, setFrom] = useState(searchParams.get("from") ?? "");
-  const [to, setTo] = useState(searchParams.get("to") ?? "");
+  const [from, setFrom] = useState(defaultFrom);
+  const [to, setTo] = useState(defaultTo);
 
   function aplicar(novoFrom: string, novoTo: string) {
     const params = new URLSearchParams();
-    if (novoFrom) params.set("from", novoFrom);
-    if (novoTo) params.set("to", novoTo);
-    router.push(`/admin/pedidos${params.toString() ? `?${params.toString()}` : ""}`);
+    params.set("from", novoFrom);
+    params.set("to", novoTo);
+    router.push(`/admin/pedidos?${params.toString()}`);
   }
 
   function handleHoje() {
@@ -74,7 +79,7 @@ export function OrdersFilterBar() {
       <button
         type="button"
         onClick={() => aplicar(from, to)}
-        className="ml-auto flex items-center gap-1.5 rounded-lg bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+        className="flex items-center gap-1.5 rounded-lg bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
       >
         <Filter size={14} />
         Filtrar
