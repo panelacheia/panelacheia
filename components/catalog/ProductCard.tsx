@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { useCart } from "@/lib/cart/cartStore";
@@ -20,9 +20,14 @@ export function ProductCard({ product }: { product: Product }) {
       quantity,
     });
     setAdded(true);
-    setFotoAmpliada(false);
-    setTimeout(() => setAdded(false), 1200);
+    setTimeout(() => setAdded(false), 1500);
   }
+
+  useEffect(() => {
+    if (!added || !fotoAmpliada) return;
+    const timer = setTimeout(() => setFotoAmpliada(false), 1500);
+    return () => clearTimeout(timer);
+  }, [added, fotoAmpliada]);
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
@@ -89,35 +94,41 @@ export function ProductCard({ product }: { product: Product }) {
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-lg border border-neutral-300">
+              {added ? (
+                <p className="rounded-lg bg-brand-primary/10 px-3 py-2 text-center text-sm font-medium text-brand-primary">
+                  Produto adicionado ao carrinho ✓
+                </p>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center rounded-lg border border-neutral-300">
+                    <button
+                      type="button"
+                      className="px-2 py-1 text-neutral-600"
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      aria-label="Diminuir quantidade"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-6 text-center text-sm">{quantity}</span>
+                    <button
+                      type="button"
+                      className="px-2 py-1 text-neutral-600"
+                      onClick={() => setQuantity((q) => q + 1)}
+                      aria-label="Aumentar quantidade"
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <button
                     type="button"
-                    className="px-2 py-1 text-neutral-600"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    aria-label="Diminuir quantidade"
+                    onClick={handleAdd}
+                    className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
                   >
-                    −
-                  </button>
-                  <span className="min-w-6 text-center text-sm">{quantity}</span>
-                  <button
-                    type="button"
-                    className="px-2 py-1 text-neutral-600"
-                    onClick={() => setQuantity((q) => q + 1)}
-                    aria-label="Aumentar quantidade"
-                  >
-                    +
+                    Adicionar
                   </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={handleAdd}
-                  className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
-                >
-                  {added ? "Adicionado ✓" : "Adicionar"}
-                </button>
-              </div>
+              )}
             </div>
           </div>
         </div>
