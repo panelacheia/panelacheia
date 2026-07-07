@@ -11,15 +11,9 @@ export default async function AdminPedidosPage() {
     .order("created_at", { ascending: false })
     .limit(100);
 
-  return (
-    <div>
-      <h1 className="mb-4 text-xl font-bold">Pedidos</h1>
-
-      {!orders?.length ? (
-        <p className="text-neutral-500">Nenhum pedido ainda.</p>
-      ) : (
-        <OrdersTable orders={orders} />
-      )}
-    </div>
+  return !orders?.length ? (
+    <p className="text-neutral-500">Nenhum pedido ainda.</p>
+  ) : (
+    <OrdersTable orders={orders} />
   );
 }

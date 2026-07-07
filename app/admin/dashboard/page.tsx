@@ -45,8 +45,6 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">Dashboard</h1>
-
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-neutral-200 bg-white p-4">
           <p className="text-xs font-medium text-neutral-500">Total vendido</p>

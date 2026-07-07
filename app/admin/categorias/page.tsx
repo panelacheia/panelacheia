@@ -8,10 +8,5 @@ export default async function AdminCategoriasPage() {
   const supabase = await createClient();
   const { data } = await supabase.from("category").select("*").order("name");
 
-  return (
-    <div>
-      <h1 className="mb-4 text-xl font-bold">Categorias</h1>
-      <CategoriesPageClient categories={(data ?? []) as Category[]} />
-    </div>
-  );
+  return <CategoriesPageClient categories={(data ?? []) as Category[]} />;
 }

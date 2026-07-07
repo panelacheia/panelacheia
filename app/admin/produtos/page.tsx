@@ -16,10 +16,5 @@ export default async function AdminProdutosPage() {
     category_name: (p.category as { name: string } | null)?.name ?? "",
   })) as Product[];
 
-  return (
-    <div>
-      <h1 className="mb-4 text-xl font-bold">Produtos</h1>
-      <ProductsPageClient products={products} />
-    </div>
-  );
+  return <ProductsPageClient products={products} />;
 }
