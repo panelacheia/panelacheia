@@ -19,14 +19,14 @@ export function AdminSidebar() {
 
   return (
     <aside className="flex h-screen w-56 shrink-0 flex-col border-r border-neutral-800 bg-[#0b1f45]">
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-4">
-        <div className="rounded-lg bg-white px-2 py-1.5">
+      <div className="flex items-center justify-center border-b border-white/10 px-4 py-5">
+        <div className="rounded-lg bg-white px-3 py-2.5">
           <Image
             src="/logos/panelacheia.png"
             alt="Panela Cheia"
             width={160}
             height={83}
-            className="h-7 w-auto"
+            className="h-12 w-auto"
           />
         </div>
       </div>

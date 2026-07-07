@@ -19,7 +19,7 @@ export function AdminTopBar() {
 
   return (
     <div className="border-b border-neutral-200 bg-white px-6 py-4">
-      <h1 className="text-sm font-semibold text-neutral-700">{current?.title ?? "Painel"}</h1>
+      <h1 className="text-lg font-bold text-neutral-800">{current?.title ?? "Painel"}</h1>
     </div>
   );
 }
