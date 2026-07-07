@@ -13,6 +13,7 @@ export function ProductForm({
   const [isPending, startTransition] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
   const [nome, setNome] = useState(product?.name ?? "");
+  const [categoria, setCategoria] = useState(product?.category ?? "");
   const [autoImageUrl, setAutoImageUrl] = useState<string | null>(null);
   const [buscandoImagem, setBuscandoImagem] = useState(false);
 
@@ -27,7 +28,7 @@ export function ProductForm({
       const res = await fetch("/api/admin/product-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: nome }),
+        body: JSON.stringify({ name: nome, category: categoria }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Não foi possível buscar a imagem.");
@@ -94,7 +95,8 @@ export function ProductForm({
         <label className="mb-1 block text-xs font-medium text-neutral-600">Categoria</label>
         <input
           name="category"
-          defaultValue={product?.category}
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
           required
           placeholder="Hortifruti, Açougue, Mercearia..."
           className={inputClass}

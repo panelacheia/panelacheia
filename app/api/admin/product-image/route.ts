@@ -3,6 +3,20 @@ import { createClient } from "@/lib/supabase/server";
 
 const PEXELS_SEARCH_URL = "https://api.pexels.com/v1/search";
 
+// Pexels indexa fotos majoritariamente com tags em inglês e favorece prato pronto/still life.
+// Um modificador em inglês por categoria aproxima o resultado de uma foto "de produto" (ingrediente cru).
+const CATEGORY_MODIFIERS: { match: RegExp; modifier: string }[] = [
+  { match: /açoug|carne|boi|bovin|suín|porco|frango|aves|peixe|frutos do mar/i, modifier: "raw meat cut" },
+  { match: /hortifruti|fruta|verdura|legum/i, modifier: "fresh produce" },
+  { match: /padaria|pão|confeitaria/i, modifier: "bakery" },
+  { match: /laticín|queijo|leite/i, modifier: "dairy product" },
+];
+
+function buildSearchQuery(name: string, category?: string) {
+  const modifier = CATEGORY_MODIFIERS.find((c) => category && c.match.test(category))?.modifier;
+  return modifier ? `${name} ${modifier}` : name;
+}
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const {
@@ -12,9 +26,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
 
-  const { name } = (await req.json()) as { name?: string };
-  const query = name?.trim();
-  if (!query) {
+  const { name, category } = (await req.json()) as { name?: string; category?: string };
+  const trimmedName = name?.trim();
+  if (!trimmedName) {
     return NextResponse.json({ error: "Informe o nome do produto." }, { status: 400 });
   }
 
@@ -22,7 +36,7 @@ export async function POST(req: NextRequest) {
   const { data: existing } = await supabase
     .from("product")
     .select("image_url")
-    .ilike("name", query)
+    .ilike("name", trimmedName)
     .not("image_url", "is", null)
     .limit(1)
     .maybeSingle();
@@ -39,7 +53,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const searchUrl = `${PEXELS_SEARCH_URL}?query=${encodeURIComponent(query)}&per_page=1&orientation=square`;
+  const searchQuery = buildSearchQuery(trimmedName, category);
+  const searchUrl = `${PEXELS_SEARCH_URL}?query=${encodeURIComponent(searchQuery)}&per_page=1&orientation=square`;
   const searchRes = await fetch(searchUrl, { headers: { Authorization: apiKey } });
   if (!searchRes.ok) {
     return NextResponse.json({ error: "Falha ao buscar imagem." }, { status: 502 });
