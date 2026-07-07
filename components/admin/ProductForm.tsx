@@ -12,6 +12,32 @@ export function ProductForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
+  const [nome, setNome] = useState(product?.name ?? "");
+  const [autoImageUrl, setAutoImageUrl] = useState<string | null>(null);
+  const [buscandoImagem, setBuscandoImagem] = useState(false);
+
+  async function handleBuscarImagem() {
+    if (!nome.trim()) {
+      setErro("Digite o nome do produto antes de buscar a foto.");
+      return;
+    }
+    setErro(null);
+    setBuscandoImagem(true);
+    try {
+      const res = await fetch("/api/admin/product-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nome }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Não foi possível buscar a imagem.");
+      setAutoImageUrl(data.url);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Não foi possível buscar a imagem.");
+    } finally {
+      setBuscandoImagem(false);
+    }
+  }
 
   function handleSubmit(formData: FormData) {
     setErro(null);
@@ -31,7 +57,13 @@ export function ProductForm({
     <form action={handleSubmit} className="flex max-w-lg flex-col gap-3">
       <div>
         <label className="mb-1 block text-xs font-medium text-neutral-600">Nome</label>
-        <input name="name" defaultValue={product?.name} required className={inputClass} />
+        <input
+          name="name"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+          className={inputClass}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -73,11 +105,32 @@ export function ProductForm({
         <label className="mb-1 block text-xs font-medium text-neutral-600">
           Foto do produto {product?.image_url && "(deixe em branco para manter a atual)"}
         </label>
-        {product?.image_url && (
+
+        {(autoImageUrl ?? product?.image_url) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image_url} alt="" className="mb-2 h-16 w-16 rounded object-cover" />
+          <img
+            src={autoImageUrl ?? product?.image_url ?? ""}
+            alt=""
+            className="mb-2 h-16 w-16 rounded object-cover"
+          />
         )}
+
+        <div className="mb-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleBuscarImagem}
+            disabled={buscandoImagem}
+            className="rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white disabled:opacity-60"
+          >
+            {buscandoImagem ? "Buscando..." : "Buscar foto automática"}
+          </button>
+          {autoImageUrl && (
+            <span className="text-xs text-neutral-500">Imagem encontrada — confira antes de salvar.</span>
+          )}
+        </div>
+
         <input name="image" type="file" accept="image/*" className="text-sm" />
+        <input type="hidden" name="auto_image_url" value={autoImageUrl ?? ""} />
       </div>
 
       <div className="flex gap-4">
