@@ -17,7 +17,7 @@ export function ProductsPageClient({ products }: { products: Product[] }) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex items-center gap-3">
         <input
           type="search"
           value={search}
