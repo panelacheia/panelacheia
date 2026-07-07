@@ -22,6 +22,7 @@ export function ProductForm({
   const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
   const [originalEscolhido, setOriginalEscolhido] = useState<string | null>(null);
   const [preview, setPreview] = useState<ImageResult | null>(null);
+  const [arquivoNome, setArquivoNome] = useState<string | null>(null);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -229,7 +230,23 @@ export function ProductForm({
         <p className="mb-1 mt-2 text-xs font-medium text-neutral-600">
           Ou envie uma foto do seu computador (sobrepõe a escolhida acima):
         </p>
-        <input name="image" type="file" accept="image/*" className="text-sm" />
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="image-upload"
+            className="cursor-pointer rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white"
+          >
+            Enviar foto do computador
+          </label>
+          {arquivoNome && <span className="text-xs text-neutral-500">{arquivoNome}</span>}
+        </div>
+        <input
+          id="image-upload"
+          name="image"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => setArquivoNome(e.target.files?.[0]?.name ?? null)}
+        />
         <input type="hidden" name="chosen_image_url" value={imagemEscolhida ?? ""} />
       </div>
 
