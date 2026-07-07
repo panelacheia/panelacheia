@@ -2,6 +2,7 @@ export type Product = {
   id: string;
   name: string;
   price_cents: number;
+  original_price_cents: number | null;
   unit: string;
   image_url: string | null;
   category: string;

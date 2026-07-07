@@ -41,13 +41,21 @@ async function uploadImageIfPresent(
 
 function parseProductFields(formData: FormData) {
   const priceReais = parseFloat(String(formData.get("price")).replace(",", "."));
+  const isPromo = formData.get("is_promo") === "on";
+
+  const originalPriceRaw = String(formData.get("original_price") ?? "").trim();
+  const originalPriceReais = originalPriceRaw ? parseFloat(originalPriceRaw.replace(",", ".")) : NaN;
+  const original_price_cents =
+    isPromo && !Number.isNaN(originalPriceReais) ? Math.round(originalPriceReais * 100) : null;
+
   return {
     name: String(formData.get("name")),
     price_cents: Math.round(priceReais * 100),
+    original_price_cents,
     unit: String(formData.get("unit")),
     category: String(formData.get("category")),
     is_active: formData.get("is_active") === "on",
-    is_promo: formData.get("is_promo") === "on",
+    is_promo: isPromo,
   };
 }
 

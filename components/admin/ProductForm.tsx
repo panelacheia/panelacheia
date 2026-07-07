@@ -23,6 +23,7 @@ export function ProductForm({
   const [originalEscolhido, setOriginalEscolhido] = useState<string | null>(null);
   const [preview, setPreview] = useState<ImageResult | null>(null);
   const [arquivoNome, setArquivoNome] = useState<string | null>(null);
+  const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -256,10 +257,36 @@ export function ProductForm({
           Ativo (visível no catálogo)
         </label>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="is_promo" defaultChecked={product?.is_promo ?? false} />
+          <input
+            type="checkbox"
+            name="is_promo"
+            checked={isPromo}
+            onChange={(e) => setIsPromo(e.target.checked)}
+          />
           Promoção
         </label>
       </div>
+
+      {isPromo && (
+        <div>
+          <label className="mb-1 block text-xs font-medium text-neutral-600">
+            Preço antes da promoção (R$)
+          </label>
+          <input
+            name="original_price"
+            defaultValue={
+              product?.original_price_cents ? (product.original_price_cents / 100).toFixed(2) : ""
+            }
+            required
+            inputMode="decimal"
+            placeholder="0,00"
+            className={inputClass}
+          />
+          <p className="mt-1 text-xs text-neutral-500">
+            Aparece riscado ao lado do preço atual no catálogo.
+          </p>
+        </div>
+      )}
 
       {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
 

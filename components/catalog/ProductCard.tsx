@@ -48,9 +48,16 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-xs text-neutral-500">{product.unit}</p>
         </div>
 
-        <p className="mt-auto text-lg font-bold text-brand-primary-dark">
-          {formatarCentavos(product.price_cents)}
-        </p>
+        <div className="mt-auto flex items-baseline gap-2">
+          <p className="text-lg font-bold text-brand-primary-dark">
+            {formatarCentavos(product.price_cents)}
+          </p>
+          {product.is_promo && product.original_price_cents && (
+            <p className="text-xs text-neutral-400 line-through">
+              {formatarCentavos(product.original_price_cents)}
+            </p>
+          )}
+        </div>
 
         <div className="flex items-center gap-2">
           <div className="flex items-center rounded-lg border border-neutral-300">
