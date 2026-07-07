@@ -2,13 +2,16 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { Pencil, Trash2 } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { deleteProduct, toggleProductField } from "@/lib/actions/products";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export function ProductTable({ products }: { products: Product[] }) {
   const [isPending, startTransition] = useTransition();
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   function handleToggle(id: string, field: "is_active" | "is_promo", value: boolean) {
     setBusyId(id);
@@ -18,12 +21,14 @@ export function ProductTable({ products }: { products: Product[] }) {
     });
   }
 
-  function handleDelete(id: string, name: string) {
-    if (!confirm(`Excluir "${name}"? Pedidos antigos que usaram esse produto não são afetados.`)) return;
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    const { id } = deleteTarget;
     setBusyId(id);
     startTransition(async () => {
       await deleteProduct(id);
       setBusyId(null);
+      setDeleteTarget(null);
     });
   }
 
@@ -76,17 +81,22 @@ export function ProductTable({ products }: { products: Product[] }) {
                 />
               </td>
               <td className="px-3 py-2 text-right">
-                <div className="flex justify-end gap-3">
-                  <Link href={`/admin/produtos/${p.id}/editar`} className="text-brand-primary hover:underline">
-                    Editar
+                <div className="flex justify-end gap-1">
+                  <Link
+                    href={`/admin/produtos/${p.id}/editar`}
+                    aria-label={`Editar ${p.name}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-brand-primary hover:bg-brand-primary/10"
+                  >
+                    <Pencil size={16} />
                   </Link>
                   <button
                     type="button"
+                    aria-label={`Excluir ${p.name}`}
                     disabled={isPending && busyId === p.id}
-                    onClick={() => handleDelete(p.id, p.name)}
-                    className="text-brand-secondary hover:underline"
+                    onClick={() => setDeleteTarget({ id: p.id, name: p.name })}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-brand-secondary hover:bg-brand-secondary/10 disabled:opacity-60"
                   >
-                    Excluir
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </td>
@@ -94,6 +104,15 @@ export function ProductTable({ products }: { products: Product[] }) {
           ))}
         </tbody>
       </table>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Excluir produto"
+        message={`Excluir "${deleteTarget?.name}"? Pedidos antigos que usaram esse produto não são afetados.`}
+        busy={isPending && busyId === deleteTarget?.id}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Category } from "@/lib/types";
 import { createCategory, updateCategory, deleteCategory } from "@/lib/actions/categories";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export function CategoriesPageClient({ categories }: { categories: Category[] }) {
   const [isPending, startTransition] = useTransition();
@@ -10,6 +11,7 @@ export function CategoriesPageClient({ categories }: { categories: Category[] })
   const [novoNome, setNovoNome] = useState("");
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [editandoNome, setEditandoNome] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   function handleCreate(formData: FormData) {
     setErro(null);
@@ -37,12 +39,13 @@ export function CategoriesPageClient({ categories }: { categories: Category[] })
     });
   }
 
-  function handleDelete(id: string, name: string) {
-    if (!confirm(`Excluir a categoria "${name}"?`)) return;
+  function confirmDelete() {
+    if (!deleteTarget) return;
     setErro(null);
     startTransition(async () => {
       try {
-        await deleteCategory(id);
+        await deleteCategory(deleteTarget.id);
+        setDeleteTarget(null);
       } catch (e) {
         setErro(e instanceof Error ? e.message : "Erro ao excluir categoria.");
       }
@@ -116,7 +119,7 @@ export function CategoriesPageClient({ categories }: { categories: Category[] })
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDelete(c.id, c.name)}
+                    onClick={() => setDeleteTarget({ id: c.id, name: c.name })}
                     disabled={isPending}
                     className="text-sm font-medium text-brand-secondary hover:underline disabled:opacity-60"
                   >
@@ -128,6 +131,15 @@ export function CategoriesPageClient({ categories }: { categories: Category[] })
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Excluir categoria"
+        message={`Excluir a categoria "${deleteTarget?.name}"?`}
+        busy={isPending}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
