@@ -20,6 +20,7 @@ export function ProductForm({
   const [buscandoFotos, setBuscandoFotos] = useState(false);
   const [selecionando, setSelecionando] = useState<string | null>(null);
   const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
+  const [originalEscolhido, setOriginalEscolhido] = useState<string | null>(null);
   const [preview, setPreview] = useState<ImageResult | null>(null);
 
   async function handleBuscarFotos() {
@@ -58,7 +59,7 @@ export function ProductForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Não foi possível salvar essa imagem.");
       setImagemEscolhida(data.url);
-      setResultados([]);
+      setOriginalEscolhido(original);
       setPreview(null);
     } catch (e) {
       setErro(e instanceof Error ? e.message : "Não foi possível salvar essa imagem.");
@@ -155,25 +156,36 @@ export function ProductForm({
         </div>
 
         {resultados.length > 0 && (
-          <div className="mb-2 grid grid-cols-4 gap-2 rounded-lg border border-neutral-200 p-2 sm:grid-cols-6">
-            {resultados.map((r) => (
-              <button
-                key={r.original}
-                type="button"
-                onClick={() => setPreview(r)}
-                disabled={selecionando !== null}
-                title={r.title}
-                className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary disabled:opacity-50"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.thumbnail} alt={r.title} className="h-full w-full object-cover" />
-                {selecionando === r.original && (
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-[10px] text-white">
-                    Salvando...
-                  </span>
-                )}
-              </button>
-            ))}
+          <div className="mb-2">
+            <div className="grid grid-cols-4 gap-2 rounded-lg border border-neutral-200 p-2 sm:grid-cols-6">
+              {resultados.map((r) => (
+                <button
+                  key={r.original}
+                  type="button"
+                  onClick={() => setPreview(r)}
+                  disabled={selecionando !== null}
+                  title={r.title}
+                  className={`relative aspect-square overflow-hidden rounded border hover:border-brand-primary disabled:opacity-50 ${
+                    originalEscolhido === r.original ? "border-2 border-brand-primary" : "border-neutral-200"
+                  }`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={r.thumbnail} alt={r.title} className="h-full w-full object-cover" />
+                  {selecionando === r.original && (
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-[10px] text-white">
+                      Salvando...
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setResultados([])}
+              className="mt-1 text-xs text-neutral-500 hover:underline"
+            >
+              Ocultar resultados
+            </button>
           </div>
         )}
 
