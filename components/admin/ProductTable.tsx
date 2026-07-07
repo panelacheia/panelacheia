@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ImageOff } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { deleteProduct, toggleProductField } from "@/lib/actions/products";
@@ -58,7 +58,12 @@ export function ProductTable({ products }: { products: Product[] }) {
                       thumbnailClassName="h-8 w-8 rounded object-cover hover:opacity-80"
                     />
                   ) : (
-                    <div className="h-8 w-8 rounded bg-neutral-100" />
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded bg-neutral-100 text-neutral-400"
+                      title="Sem foto"
+                    >
+                      <ImageOff size={16} />
+                    </div>
                   )}
                   <div>
                     <p className="font-medium">{p.name}</p>
