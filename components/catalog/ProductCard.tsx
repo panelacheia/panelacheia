@@ -20,6 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
       quantity,
     });
     setAdded(true);
+    setFotoAmpliada(false);
     setTimeout(() => setAdded(false), 1200);
   }
 
