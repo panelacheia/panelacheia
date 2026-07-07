@@ -97,7 +97,7 @@ export function ProductForm({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid gap-3 ${isPromo ? "grid-cols-3" : "grid-cols-2"}`}>
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Preço (R$)</label>
           <input
@@ -109,6 +109,25 @@ export function ProductForm({
             className={inputClass}
           />
         </div>
+
+        {isPromo && (
+          <div>
+            <label className="mb-1 block text-xs font-medium text-neutral-600">
+              Preço antes (R$)
+            </label>
+            <input
+              name="original_price"
+              defaultValue={
+                product?.original_price_cents ? (product.original_price_cents / 100).toFixed(2) : ""
+              }
+              required
+              inputMode="decimal"
+              placeholder="0,00"
+              className={inputClass}
+            />
+          </div>
+        )}
+
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Unidade</label>
           <input
@@ -266,27 +285,6 @@ export function ProductForm({
           Promoção
         </label>
       </div>
-
-      {isPromo && (
-        <div>
-          <label className="mb-1 block text-xs font-medium text-neutral-600">
-            Preço antes da promoção (R$)
-          </label>
-          <input
-            name="original_price"
-            defaultValue={
-              product?.original_price_cents ? (product.original_price_cents / 100).toFixed(2) : ""
-            }
-            required
-            inputMode="decimal"
-            placeholder="0,00"
-            className={inputClass}
-          />
-          <p className="mt-1 text-xs text-neutral-500">
-            Aparece riscado ao lado do preço atual no catálogo.
-          </p>
-        </div>
-      )}
 
       {erro && <p className="text-sm text-brand-secondary">{erro}</p>}
 
