@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/lib/cart/cartStore";
 import { formatarCentavos } from "@/lib/orders/fees";
 
@@ -39,8 +40,8 @@ export default function CarrinhoPage() {
                 className="h-14 w-14 shrink-0 rounded-lg object-cover"
               />
             ) : (
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-2xl">
-                🛒
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-300">
+                <ShoppingCart size={24} />
               </div>
             )}
 
@@ -81,7 +82,7 @@ export default function CarrinhoPage() {
               className="text-neutral-400 hover:text-brand-secondary"
               aria-label="Remover item"
             >
-              ✕
+              <X size={18} />
             </button>
           </div>
         ))}

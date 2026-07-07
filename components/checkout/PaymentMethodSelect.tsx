@@ -1,11 +1,12 @@
 "use client";
 
+import { CreditCard, Banknote, Zap, type LucideIcon } from "lucide-react";
 import type { PaymentMethod } from "@/lib/types";
 
-const OPTIONS: { value: PaymentMethod; label: string; icon: string }[] = [
-  { value: "cartao", label: "Cartão", icon: "💳" },
-  { value: "dinheiro", label: "Dinheiro", icon: "💵" },
-  { value: "pix", label: "Pix", icon: "🔑" },
+const OPTIONS: { value: PaymentMethod; label: string; icon: LucideIcon }[] = [
+  { value: "cartao", label: "Cartão", icon: CreditCard },
+  { value: "dinheiro", label: "Dinheiro", icon: Banknote },
+  { value: "pix", label: "Pix", icon: Zap },
 ];
 
 export function PaymentMethodSelect({
@@ -22,13 +23,13 @@ export function PaymentMethodSelect({
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`rounded-xl border px-2 py-3 text-sm font-semibold ${
+          className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-3 text-sm font-semibold ${
             value === opt.value
               ? "border-brand-primary bg-brand-primary text-white"
               : "border-neutral-300 bg-white text-neutral-700"
           }`}
         >
-          <div className="text-lg">{opt.icon}</div>
+          <opt.icon size={20} />
           {opt.label}
         </button>
       ))}

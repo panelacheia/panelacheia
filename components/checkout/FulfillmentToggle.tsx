@@ -1,5 +1,6 @@
 "use client";
 
+import { Store, Truck } from "lucide-react";
 import type { FulfillmentType } from "@/lib/types";
 
 export function FulfillmentToggle({
@@ -14,24 +15,24 @@ export function FulfillmentToggle({
       <button
         type="button"
         onClick={() => onChange("retirada")}
-        className={`rounded-xl border px-4 py-3 text-sm font-semibold ${
+        className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold ${
           value === "retirada"
             ? "border-brand-primary bg-brand-primary text-white"
             : "border-neutral-300 bg-white text-neutral-700"
         }`}
       >
-        🏬 Retirada na loja
+        <Store size={16} /> Retirada na loja
       </button>
       <button
         type="button"
         onClick={() => onChange("entrega")}
-        className={`rounded-xl border px-4 py-3 text-sm font-semibold ${
+        className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold ${
           value === "entrega"
             ? "border-brand-primary bg-brand-primary text-white"
             : "border-neutral-300 bg-white text-neutral-700"
         }`}
       >
-        📦 Entrega
+        <Truck size={16} /> Entrega
       </button>
     </div>
   );

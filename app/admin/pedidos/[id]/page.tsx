@@ -9,6 +9,7 @@ import {
   MapPin,
   CreditCard,
   Navigation,
+  ShoppingCart,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -127,8 +128,8 @@ export default async function PedidoDetailPage({
                         thumbnailClassName="h-10 w-10 shrink-0 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-lg">
-                        🛒
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-300">
+                        <ShoppingCart size={18} />
                       </div>
                     )}
                     <span className="flex-1 text-sm">

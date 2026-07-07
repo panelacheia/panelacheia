@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ShoppingCart, X, CheckCircle2 } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { useCart } from "@/lib/cart/cartStore";
@@ -41,7 +42,9 @@ export function ProductCard({ product }: { product: Product }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-4xl">🛒</div>
+          <div className="flex h-full w-full items-center justify-center text-neutral-300">
+            <ShoppingCart size={40} />
+          </div>
         )}
         {product.is_promo && (
           <span className="absolute left-2 top-2 rounded-md bg-brand-secondary px-2 py-0.5 text-xs font-bold text-white">
@@ -67,9 +70,9 @@ export function ProductCard({ product }: { product: Product }) {
                 type="button"
                 onClick={() => setFotoAmpliada(false)}
                 aria-label="Fechar"
-                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-lg leading-none shadow hover:bg-white"
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow hover:bg-white"
               >
-                ×
+                <X size={16} />
               </button>
             </div>
 
@@ -190,12 +193,14 @@ export function ProductCard({ product }: { product: Product }) {
                   className="h-12 w-12 shrink-0 rounded-lg object-cover"
                 />
               ) : (
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-xl">
-                  🛒
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-300">
+                  <ShoppingCart size={20} />
                 </div>
               )}
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-brand-primary">Adicionado ao carrinho ✓</p>
+                <p className="flex items-center gap-1 text-sm font-semibold text-brand-primary">
+                  <CheckCircle2 size={16} /> Adicionado ao carrinho
+                </p>
                 <p className="truncate text-sm text-neutral-600">{product.name}</p>
               </div>
             </div>

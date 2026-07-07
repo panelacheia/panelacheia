@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 import { formatarCentavos } from "@/lib/orders/fees";
 import type { CreateOrderResponse } from "@/lib/types";
 
@@ -25,7 +26,7 @@ export default function ConfirmacaoPage({
 
   return (
     <div className="mx-auto max-w-md px-4 py-16 text-center">
-      <p className="text-5xl">✅</p>
+      <CheckCircle2 size={56} className="mx-auto text-green-600" />
       <h1 className="mt-4 text-xl font-bold">Pedido #{orderNumber} recebido!</h1>
 
       {pedido ? (

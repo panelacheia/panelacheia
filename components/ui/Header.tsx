@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart/cartStore";
 
 export function Header() {
@@ -28,7 +29,7 @@ export function Header() {
           href="/carrinho"
           className="relative flex items-center gap-2 rounded-full bg-brand-primary px-3 py-2 text-sm font-medium text-white hover:bg-brand-primary-dark"
         >
-          <span aria-hidden>🛒</span>
+          <ShoppingCart size={16} aria-hidden />
           <span>Carrinho</span>
           {itemCount > 0 && (
             <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-secondary px-1 text-xs font-bold text-white">

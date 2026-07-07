@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Check } from "lucide-react";
 import { updateInternalNotes } from "@/lib/actions/orders";
 
 export function InternalNotesField({ id, initialNotes }: { id: string; initialNotes: string }) {
@@ -39,7 +40,11 @@ export function InternalNotesField({ id, initialNotes }: { id: string; initialNo
         >
           {isPending ? "Salvando..." : "Salvar observação"}
         </button>
-        {saved && <span className="text-sm text-green-600">Salvo ✓</span>}
+        {saved && (
+          <span className="flex items-center gap-1 text-sm text-green-600">
+            <Check size={16} /> Salvo
+          </span>
+        )}
       </div>
     </div>
   );
