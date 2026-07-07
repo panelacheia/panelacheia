@@ -9,6 +9,7 @@ export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [fotoAmpliada, setFotoAmpliada] = useState(false);
 
   function handleAdd() {
     addItem({
@@ -24,7 +25,12 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
-      <div className="relative aspect-square bg-neutral-100">
+      <button
+        type="button"
+        onClick={() => product.image_url && setFotoAmpliada(true)}
+        className="relative aspect-square bg-neutral-100"
+        aria-label={`Ver foto ampliada de ${product.name}`}
+      >
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -40,7 +46,36 @@ export function ProductCard({ product }: { product: Product }) {
             Promoção
           </span>
         )}
-      </div>
+      </button>
+
+      {fotoAmpliada && product.image_url && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setFotoAmpliada(false)}
+        >
+          <div className="flex max-h-full max-w-lg flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="max-h-[75vh] w-full rounded-xl bg-white object-contain"
+            />
+            <div className="flex items-center justify-between rounded-lg bg-white px-4 py-2">
+              <div>
+                <p className="text-sm font-medium">{product.name}</p>
+                <p className="text-xs text-neutral-500">{product.unit}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFotoAmpliada(false)}
+                className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-1 flex-col gap-2 p-3">
         <div>
