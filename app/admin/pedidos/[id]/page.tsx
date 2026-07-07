@@ -45,7 +45,7 @@ export default async function PedidoDetailPage({
   const isEntrega = order.fulfillment_type === "entrega";
 
   return (
-    <div className="max-w-5xl">
+    <div className="mx-auto max-w-5xl">
       <Link
         href="/admin/pedidos"
         className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-neutral-500 hover:text-brand-primary"
