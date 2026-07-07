@@ -174,7 +174,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       {confirmacaoAberta && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onClick={() => setConfirmacaoAberta(false)}
         >
           <div
@@ -201,19 +201,19 @@ export function ProductCard({ product }: { product: Product }) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <Link
-                href="/checkout"
-                className="block rounded-lg bg-brand-primary px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-primary-dark"
-              >
-                Finalizar pedido
-              </Link>
               <button
                 type="button"
                 onClick={() => setConfirmacaoAberta(false)}
-                className="rounded-lg border border-neutral-300 px-4 py-2.5 text-sm font-medium hover:bg-neutral-100"
+                className="rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
               >
                 Continuar comprando
               </button>
+              <Link
+                href="/checkout"
+                className="block rounded-lg border border-neutral-300 px-4 py-2.5 text-center text-sm font-medium hover:bg-neutral-100"
+              >
+                Finalizar pedido
+              </Link>
             </div>
           </div>
         </div>
