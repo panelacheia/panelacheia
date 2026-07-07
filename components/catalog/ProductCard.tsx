@@ -53,69 +53,69 @@ export function ProductCard({ product }: { product: Product }) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setFotoAmpliada(false)}
         >
-          <div className="flex max-h-full max-w-lg flex-col gap-3" onClick={(e) => e.stopPropagation()}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="max-h-[75vh] w-full rounded-xl bg-white object-contain"
-            />
-            <div className="flex flex-col gap-3 rounded-lg bg-white px-4 py-3">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-sm font-medium">{product.name}</p>
-                  <p className="text-xs text-neutral-500">{product.unit}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setFotoAmpliada(false)}
-                  className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
-                >
-                  Fechar
-                </button>
+          <div className="flex max-h-full w-full max-w-sm flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="max-h-[65vh] w-full rounded-t-xl bg-white object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setFotoAmpliada(false)}
+                aria-label="Fechar"
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-lg leading-none shadow hover:bg-white"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-b-xl bg-white px-4 py-3">
+              <div>
+                <p className="text-sm font-medium">{product.name}</p>
+                <p className="text-xs text-neutral-500">{product.unit}</p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-baseline gap-2">
-                  <p className="text-lg font-bold text-brand-primary-dark">
-                    {formatarCentavos(product.price_cents)}
+              <div className="flex items-baseline gap-2">
+                <p className="text-lg font-bold text-brand-primary-dark">
+                  {formatarCentavos(product.price_cents)}
+                </p>
+                {product.is_promo && product.original_price_cents && (
+                  <p className="text-xs text-neutral-400 line-through">
+                    {formatarCentavos(product.original_price_cents)}
                   </p>
-                  {product.is_promo && product.original_price_cents && (
-                    <p className="text-xs text-neutral-400 line-through">
-                      {formatarCentavos(product.original_price_cents)}
-                    </p>
-                  )}
-                </div>
+                )}
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center rounded-lg border border-neutral-300">
-                    <button
-                      type="button"
-                      className="px-2 py-1 text-neutral-600"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      aria-label="Diminuir quantidade"
-                    >
-                      −
-                    </button>
-                    <span className="min-w-6 text-center text-sm">{quantity}</span>
-                    <button
-                      type="button"
-                      className="px-2 py-1 text-neutral-600"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      aria-label="Aumentar quantidade"
-                    >
-                      +
-                    </button>
-                  </div>
-
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-lg border border-neutral-300">
                   <button
                     type="button"
-                    onClick={handleAdd}
-                    className="rounded-lg bg-brand-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+                    className="px-2 py-1 text-neutral-600"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    aria-label="Diminuir quantidade"
                   >
-                    {added ? "Adicionado ✓" : "Adicionar"}
+                    −
+                  </button>
+                  <span className="min-w-6 text-center text-sm">{quantity}</span>
+                  <button
+                    type="button"
+                    className="px-2 py-1 text-neutral-600"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    aria-label="Aumentar quantidade"
+                  >
+                    +
                   </button>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  className="flex-1 rounded-lg bg-brand-primary px-2 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+                >
+                  {added ? "Adicionado ✓" : "Adicionar"}
+                </button>
               </div>
             </div>
           </div>
