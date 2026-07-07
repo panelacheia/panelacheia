@@ -45,11 +45,11 @@ export function buildWhatsappMessage(params: {
   } = params;
 
   const linhasItens = items
-    .map((item, i) => {
+    .map((item) => {
       const qtd = Number.isInteger(item.quantity)
         ? item.quantity
         : item.quantity.toLocaleString("pt-BR");
-      return `${i + 1}. ${qtd}x ${item.productName} (${item.unit}) — ${formatarCentavos(
+      return `${qtd}x ${item.productName} (${item.unit}) — ${formatarCentavos(
         item.unitPriceCents
       )} = ${formatarCentavos(item.lineTotalCents)}`;
     })
