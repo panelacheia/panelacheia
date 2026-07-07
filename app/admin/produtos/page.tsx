@@ -8,14 +8,18 @@ export default async function AdminProdutosPage() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("product")
-    .select("*")
-    .order("category")
+    .select("*, category:category_id(name)")
     .order("sort_order");
+
+  const products = (data ?? []).map((p) => ({
+    ...p,
+    category_name: (p.category as { name: string } | null)?.name ?? "",
+  })) as Product[];
 
   return (
     <div>
       <h1 className="mb-4 text-xl font-bold">Produtos</h1>
-      <ProductsPageClient products={(data ?? []) as Product[]} />
+      <ProductsPageClient products={products} />
     </div>
   );
 }

@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { Product } from "@/lib/types";
+import type { Category, Product } from "@/lib/types";
 
 type ImageResult = { original: string; thumbnail: string; title: string };
 
 export function ProductForm({
   product,
+  categories,
   action,
 }: {
   product?: Product;
+  categories: Category[];
   action: (formData: FormData) => Promise<void>;
 }) {
   const [isPending, startTransition] = useTransition();
@@ -142,13 +144,21 @@ export function ProductForm({
 
       <div>
         <label className="mb-1 block text-xs font-medium text-neutral-600">Categoria</label>
-        <input
-          name="category"
-          defaultValue={product?.category}
+        <select
+          name="category_id"
+          defaultValue={product?.category_id ?? ""}
           required
-          placeholder="Hortifruti, Açougue, Mercearia..."
           className={inputClass}
-        />
+        >
+          <option value="" disabled>
+            Selecione uma categoria
+          </option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

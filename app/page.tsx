@@ -8,9 +8,8 @@ export default async function HomePage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("product")
-    .select("*")
+    .select("*, category:category_id(name)")
     .eq("is_active", true)
-    .order("category")
     .order("sort_order");
 
   if (error) {
@@ -21,5 +20,10 @@ export default async function HomePage() {
     );
   }
 
-  return <CatalogClient products={(data ?? []) as Product[]} />;
+  const products = (data ?? []).map((p) => ({
+    ...p,
+    category_name: (p.category as { name: string } | null)?.name ?? "",
+  })) as Product[];
+
+  return <CatalogClient products={products} />;
 }

@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    router.push("/admin/produtos");
+    router.push("/admin/dashboard");
     router.refresh();
   }
 

@@ -1,3 +1,9 @@
+export type Category = {
+  id: string;
+  name: string;
+  sort_order: number;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -5,7 +11,8 @@ export type Product = {
   original_price_cents: number | null;
   unit: string;
   image_url: string | null;
-  category: string;
+  category_id: string;
+  category_name: string;
   is_active: boolean;
   is_promo: boolean;
   sort_order: number;
@@ -13,6 +20,7 @@ export type Product = {
 
 export type FulfillmentType = "retirada" | "entrega";
 export type PaymentMethod = "cartao" | "dinheiro" | "pix";
+export type PaymentStatus = "pendente" | "pago" | "nao_pago";
 
 export type CartItem = {
   productId: string;

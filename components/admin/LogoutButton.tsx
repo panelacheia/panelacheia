@@ -17,8 +17,9 @@ export function LogoutButton() {
     <button
       type="button"
       onClick={handleLogout}
-      className="text-sm font-medium text-neutral-500 hover:text-brand-secondary"
+      className="flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white"
     >
+      <span aria-hidden>🚪</span>
       Sair
     </button>
   );

@@ -10,7 +10,7 @@ export function CatalogClient({ products }: { products: Product[] }) {
   const [category, setCategory] = useState<string | null>(null);
 
   const categories = useMemo(
-    () => Array.from(new Set(products.map((p) => p.category))),
+    () => Array.from(new Set(products.map((p) => p.category_name))),
     [products]
   );
 
@@ -18,7 +18,7 @@ export function CatalogClient({ products }: { products: Product[] }) {
     const term = normalize(search);
     return products.filter((p) => {
       const matchesSearch = term === "" || normalize(p.name).includes(term);
-      const matchesCategory = !category || p.category === category;
+      const matchesCategory = !category || p.category_name === category;
       return matchesSearch && matchesCategory;
     });
   }, [products, search, category]);

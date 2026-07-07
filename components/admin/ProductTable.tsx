@@ -57,7 +57,7 @@ export function ProductTable({ products }: { products: Product[] }) {
                   </div>
                 </div>
               </td>
-              <td className="px-3 py-2 text-neutral-600">{p.category}</td>
+              <td className="px-3 py-2 text-neutral-600">{p.category_name}</td>
               <td className="px-3 py-2">{formatarCentavos(p.price_cents)}</td>
               <td className="px-3 py-2">
                 <input

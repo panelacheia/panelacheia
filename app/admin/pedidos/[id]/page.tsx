@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatarCentavos } from "@/lib/orders/fees";
+import { PaymentStatusSelect } from "@/components/admin/PaymentStatusSelect";
+import type { PaymentStatus } from "@/lib/types";
 
 export default async function PedidoDetailPage({
   params,
@@ -17,7 +19,10 @@ export default async function PedidoDetailPage({
 
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-4 text-xl font-bold">Pedido #{order.order_number}</h1>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold">Pedido #{order.order_number}</h1>
+        <PaymentStatusSelect id={order.id} status={order.payment_status as PaymentStatus} />
+      </div>
 
       <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4">
         <p><strong>Cliente:</strong> {order.customer_name}</p>

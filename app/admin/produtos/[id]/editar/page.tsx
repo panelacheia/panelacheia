@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { updateProduct } from "@/lib/actions/products";
-import type { Product } from "@/lib/types";
+import type { Category, Product } from "@/lib/types";
 
 export default async function EditarProdutoPage({
   params,
@@ -12,6 +12,7 @@ export default async function EditarProdutoPage({
   const { id } = await params;
   const supabase = await createClient();
   const { data: product } = await supabase.from("product").select("*").eq("id", id).single();
+  const { data: categories } = await supabase.from("category").select("*").order("name");
 
   if (!product) notFound();
 
@@ -20,7 +21,11 @@ export default async function EditarProdutoPage({
   return (
     <div>
       <h1 className="mb-4 text-xl font-bold">Editar produto</h1>
-      <ProductForm product={product as Product} action={updateWithId} />
+      <ProductForm
+        product={product as Product}
+        categories={(categories ?? []) as Category[]}
+        action={updateWithId}
+      />
     </div>
   );
 }

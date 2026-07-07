@@ -53,7 +53,7 @@ function parseProductFields(formData: FormData) {
     price_cents: Math.round(priceReais * 100),
     original_price_cents,
     unit: String(formData.get("unit")),
-    category: String(formData.get("category")),
+    category_id: String(formData.get("category_id")),
     is_active: formData.get("is_active") === "on",
     is_promo: isPromo,
   };
