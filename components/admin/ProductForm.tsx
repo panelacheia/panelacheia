@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import type { Product } from "@/lib/types";
 
+type ImageResult = { original: string; thumbnail: string; title: string };
+
 export function ProductForm({
   product,
   action,
@@ -12,6 +14,56 @@ export function ProductForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
+  const [nome, setNome] = useState(product?.name ?? "");
+
+  const [resultados, setResultados] = useState<ImageResult[]>([]);
+  const [buscandoFotos, setBuscandoFotos] = useState(false);
+  const [selecionando, setSelecionando] = useState<string | null>(null);
+  const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
+
+  async function handleBuscarFotos() {
+    if (!nome.trim()) {
+      setErro("Digite o nome do produto antes de buscar fotos.");
+      return;
+    }
+    setErro(null);
+    setResultados([]);
+    setBuscandoFotos(true);
+    try {
+      const res = await fetch("/api/admin/product-image-search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nome }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Não foi possível buscar fotos.");
+      setResultados(data.results);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Não foi possível buscar fotos.");
+    } finally {
+      setBuscandoFotos(false);
+    }
+  }
+
+  async function handleEscolherFoto(original: string) {
+    setErro(null);
+    setSelecionando(original);
+    try {
+      const res = await fetch("/api/admin/product-image-select", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: original }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Não foi possível salvar essa imagem.");
+      setImagemEscolhida(data.url);
+      setResultados([]);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Não foi possível salvar essa imagem.");
+    } finally {
+      setSelecionando(null);
+    }
+  }
 
   function handleSubmit(formData: FormData) {
     setErro(null);
@@ -31,7 +83,13 @@ export function ProductForm({
     <form action={handleSubmit} className="flex max-w-lg flex-col gap-3">
       <div>
         <label className="mb-1 block text-xs font-medium text-neutral-600">Nome</label>
-        <input name="name" defaultValue={product?.name} required className={inputClass} />
+        <input
+          name="name"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+          className={inputClass}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -73,11 +131,52 @@ export function ProductForm({
         <label className="mb-1 block text-xs font-medium text-neutral-600">
           Foto do produto {product?.image_url && "(deixe em branco para manter a atual)"}
         </label>
-        {product?.image_url && (
+
+        {(imagemEscolhida ?? product?.image_url) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image_url} alt="" className="mb-2 h-16 w-16 rounded object-cover" />
+          <img
+            src={imagemEscolhida ?? product?.image_url ?? ""}
+            alt=""
+            className="mb-2 h-16 w-16 rounded object-cover"
+          />
         )}
+
+        <div className="mb-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleBuscarFotos}
+            disabled={buscandoFotos}
+            className="rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white disabled:opacity-60"
+          >
+            {buscandoFotos ? "Buscando..." : "Buscar fotos no Google"}
+          </button>
+        </div>
+
+        {resultados.length > 0 && (
+          <div className="mb-2 grid grid-cols-4 gap-2 rounded-lg border border-neutral-200 p-2 sm:grid-cols-6">
+            {resultados.map((r) => (
+              <button
+                key={r.original}
+                type="button"
+                onClick={() => handleEscolherFoto(r.original)}
+                disabled={selecionando !== null}
+                title={r.title}
+                className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary disabled:opacity-50"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={r.thumbnail} alt={r.title} className="h-full w-full object-cover" />
+                {selecionando === r.original && (
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-[10px] text-white">
+                    Salvando...
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
         <input name="image" type="file" accept="image/*" className="text-sm" />
+        <input type="hidden" name="chosen_image_url" value={imagemEscolhida ?? ""} />
       </div>
 
       <div className="flex gap-4">
