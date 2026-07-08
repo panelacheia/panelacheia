@@ -66,9 +66,16 @@ function parseProductFields(formData: FormData) {
   const original_price_cents =
     isPromo && !Number.isNaN(originalPriceReais) ? Math.round(originalPriceReais * 100) : null;
 
+  const price_cents = Math.round(priceReais * 100);
+  if (isPromo && (original_price_cents === null || original_price_cents <= price_cents)) {
+    throw new Error(
+      'Produto em promoção precisa do "Preço antes" preenchido e maior que o preço atual.'
+    );
+  }
+
   return {
     name: String(formData.get("name")),
-    price_cents: Math.round(priceReais * 100),
+    price_cents,
     original_price_cents,
     unit: String(formData.get("unit")),
     category_id: String(formData.get("category_id")),
