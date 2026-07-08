@@ -118,6 +118,7 @@ export function ProductTable({ products }: { products: Product[] }) {
         open={deleteTarget !== null}
         title="Excluir produto"
         message={`Excluir "${deleteTarget?.name}"? Pedidos antigos que usaram esse produto não são afetados.`}
+        busyLabel="Excluindo..."
         busy={isPending && busyId === deleteTarget?.id}
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}

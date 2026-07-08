@@ -146,6 +146,7 @@ export function CategoriesPageClient({ categories }: { categories: Category[] })
         open={deleteTarget !== null}
         title="Excluir categoria"
         message={`Excluir a categoria "${deleteTarget?.name}"?`}
+        busyLabel="Excluindo..."
         busy={isPending}
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}

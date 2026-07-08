@@ -5,6 +5,8 @@ export function ConfirmDialog({
   title,
   message,
   confirmLabel = "Excluir",
+  busyLabel,
+  tone = "danger",
   busy = false,
   onConfirm,
   onCancel,
@@ -13,11 +15,18 @@ export function ConfirmDialog({
   title: string;
   message: string;
   confirmLabel?: string;
+  busyLabel?: string;
+  tone?: "danger" | "primary";
   busy?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }) {
   if (!open) return null;
+
+  const toneClass =
+    tone === "danger"
+      ? "bg-brand-secondary hover:opacity-90"
+      : "bg-brand-primary hover:bg-brand-primary-dark";
 
   return (
     <div
@@ -43,9 +52,9 @@ export function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={busy}
-            className="rounded-lg bg-brand-secondary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+            className={`rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 ${toneClass}`}
           >
-            {busy ? "Excluindo..." : confirmLabel}
+            {busy ? (busyLabel ?? `${confirmLabel}...`) : confirmLabel}
           </button>
         </div>
       </div>

@@ -355,6 +355,8 @@ export function ProductForm({
             : "Deseja criar esse produto?"
         }
         confirmLabel="Salvar"
+        busyLabel="Salvando..."
+        tone="primary"
         busy={isPending}
         onConfirm={confirmSave}
         onCancel={() => setPendingFormData(null)}
