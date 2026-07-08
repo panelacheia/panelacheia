@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import { Jimp } from "jimp";
 
 const THRESHOLD = 28;
@@ -11,7 +12,10 @@ const THRESHOLD = 28;
  */
 export async function removeBackground(input: Buffer): Promise<Buffer> {
   try {
-    const image = await Jimp.read(input);
+    // Normaliza qualquer formato de entrada (webp, avif, jpg, png...) pra PNG via
+    // sharp (nativo, decodifica tudo) antes de aplicar o flood-fill com Jimp.
+    const normalized = await sharp(input).png().toBuffer();
+    const image = await Jimp.read(normalized);
     const { width, height, data } = image.bitmap;
     const total = width * height;
 
