@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { removeBackground } from "@/lib/images/removeBackground";
+import { normalize } from "@/lib/normalize";
 
 async function requireStaff() {
   const supabase = await createClient();
@@ -107,6 +108,112 @@ export async function deleteProduct(id: string) {
 
   revalidatePath("/admin/produtos");
   revalidatePath("/");
+}
+
+export type BulkProductRow = {
+  nome: string;
+  categoria: string;
+  unidade: string;
+  preco: string;
+  promocao: string;
+  preco_antes: string;
+  ativo: string;
+};
+
+export type BulkImportError = { row: number; message: string };
+export type BulkImportResult = { created: number; errors: BulkImportError[] };
+
+function parsePrecoReais(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const num = parseFloat(trimmed.replace(",", "."));
+  return Number.isFinite(num) ? num : null;
+}
+
+function parseSimNao(value: string, padrao: boolean): boolean {
+  const v = normalize(value);
+  if (!v) return padrao;
+  return ["sim", "s", "yes", "y", "1", "true"].includes(v);
+}
+
+export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkImportResult> {
+  const supabase = await requireStaff();
+  const { data: categoriesData } = await supabase.from("category").select("id, name");
+  const categories = (categoriesData ?? []) as { id: string; name: string }[];
+
+  const errors: BulkImportError[] = [];
+  const toInsert: {
+    name: string;
+    price_cents: number;
+    original_price_cents: number | null;
+    unit: string;
+    category_id: string;
+    is_active: boolean;
+    is_promo: boolean;
+  }[] = [];
+
+  rows.forEach((row, index) => {
+    const linha = index + 2; // linha 1 da planilha é o cabeçalho
+
+    const nome = row.nome.trim();
+    if (!nome) {
+      errors.push({ row: linha, message: "Nome é obrigatório." });
+      return;
+    }
+
+    const categoria = categories.find((c) => normalize(c.name) === normalize(row.categoria));
+    if (!categoria) {
+      errors.push({ row: linha, message: `Categoria "${row.categoria}" não encontrada.` });
+      return;
+    }
+
+    const unidade = normalize(row.unidade);
+    if (unidade !== "un" && unidade !== "kg") {
+      errors.push({ row: linha, message: `Unidade "${row.unidade}" inválida (use "un" ou "kg").` });
+      return;
+    }
+
+    const preco = parsePrecoReais(row.preco);
+    if (preco === null || preco <= 0) {
+      errors.push({ row: linha, message: `Preço "${row.preco}" inválido.` });
+      return;
+    }
+
+    const isPromo = parseSimNao(row.promocao, false);
+    let originalPriceCents: number | null = null;
+    if (isPromo) {
+      const precoAntes = parsePrecoReais(row.preco_antes);
+      if (precoAntes === null || precoAntes <= preco) {
+        errors.push({
+          row: linha,
+          message: 'Produto em promoção precisa de "preco_antes" maior que o preço atual.',
+        });
+        return;
+      }
+      originalPriceCents = Math.round(precoAntes * 100);
+    }
+
+    toInsert.push({
+      name: nome,
+      price_cents: Math.round(preco * 100),
+      original_price_cents: originalPriceCents,
+      unit: unidade,
+      category_id: categoria.id,
+      is_active: parseSimNao(row.ativo, true),
+      is_promo: isPromo,
+    });
+  });
+
+  if (toInsert.length > 0) {
+    const { error } = await supabase.from("product").insert(toInsert);
+    if (error) {
+      return { created: 0, errors: [...errors, { row: 0, message: `Falha ao salvar produtos: ${error.message}` }] };
+    }
+  }
+
+  revalidatePath("/admin/produtos");
+  revalidatePath("/");
+  return { created: toInsert.length, errors };
 }
 
 export async function toggleProductField(

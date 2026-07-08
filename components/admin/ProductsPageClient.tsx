@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { normalize } from "@/lib/normalize";
 import { ProductTable } from "./ProductTable";
+import { BulkUploadModal } from "./BulkUploadModal";
 
 export function ProductsPageClient({ products }: { products: Product[] }) {
   const [search, setSearch] = useState("");
@@ -31,6 +32,7 @@ export function ProductsPageClient({ products }: { products: Product[] }) {
         >
           + Novo Produto
         </Link>
+        <BulkUploadModal />
       </div>
 
       {filtered.length === 0 ? (
