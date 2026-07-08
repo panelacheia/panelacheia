@@ -76,7 +76,7 @@ export function ProductCard({ product }: { product: Product }) {
           <img
             src={product.image_url}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-contain p-2"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-neutral-300">
