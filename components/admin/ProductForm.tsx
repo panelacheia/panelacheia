@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { ImageOff } from "lucide-react";
 import type { Category, Product, StorageImage } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -21,14 +21,25 @@ export function ProductForm({
 
   const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
   const [arquivoNome, setArquivoNome] = useState<string | null>(null);
+  const [arquivoPreview, setArquivoPreview] = useState<string | null>(null);
+  const [fotoAtualComErro, setFotoAtualComErro] = useState(false);
   const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
   const [fotoAtualAmpliada, setFotoAtualAmpliada] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bibliotecaAberta, setBibliotecaAberta] = useState(false);
   const [carregandoBiblioteca, setCarregandoBiblioteca] = useState(false);
   const [imagensBiblioteca, setImagensBiblioteca] = useState<StorageImage[]>([]);
   const [imagensComErro, setImagensComErro] = useState<Record<string, boolean>>({});
+
+  const fotoPreviewUrl = arquivoPreview ?? imagemEscolhida ?? product?.image_url ?? null;
+
+  useEffect(() => {
+    return () => {
+      if (arquivoPreview) URL.revokeObjectURL(arquivoPreview);
+    };
+  }, [arquivoPreview]);
 
   async function handleAbrirBiblioteca() {
     setErro(null);
@@ -49,7 +60,19 @@ export function ProductForm({
   function handleEscolherDaBiblioteca(img: StorageImage) {
     setImagemEscolhida(img.url);
     setArquivoNome(null);
+    if (arquivoPreview) URL.revokeObjectURL(arquivoPreview);
+    setArquivoPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setFotoAtualComErro(false);
     setBibliotecaAberta(false);
+  }
+
+  function handleArquivoSelecionado(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setArquivoNome(file?.name ?? null);
+    if (arquivoPreview) URL.revokeObjectURL(arquivoPreview);
+    setArquivoPreview(file ? URL.createObjectURL(file) : null);
+    setFotoAtualComErro(false);
   }
 
   function handleSubmit(formData: FormData) {
@@ -156,23 +179,33 @@ export function ProductForm({
           Foto do produto {product?.image_url && "(deixe em branco para manter a atual)"}
         </label>
 
-        {(imagemEscolhida ?? product?.image_url) && (
+        {fotoPreviewUrl && (
           <button
             type="button"
-            onClick={() => setFotoAtualAmpliada(true)}
+            onClick={() => !fotoAtualComErro && setFotoAtualAmpliada(true)}
             className="mb-2 block"
             aria-label="Ver foto ampliada"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imagemEscolhida ?? product?.image_url ?? ""}
-              alt=""
-              className="h-16 w-16 rounded object-cover ring-1 ring-neutral-200 transition hover:opacity-80"
-            />
+            {fotoAtualComErro ? (
+              <div
+                className="flex h-16 w-16 items-center justify-center rounded bg-neutral-100 text-neutral-400"
+                title="Não foi possível carregar a imagem"
+              >
+                <ImageOff size={20} />
+              </div>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={fotoPreviewUrl}
+                alt=""
+                onError={() => setFotoAtualComErro(true)}
+                className="h-16 w-16 rounded object-cover ring-1 ring-neutral-200 transition hover:opacity-80"
+              />
+            )}
           </button>
         )}
 
-        {fotoAtualAmpliada && (
+        {fotoAtualAmpliada && fotoPreviewUrl && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
             onClick={() => setFotoAtualAmpliada(false)}
@@ -180,7 +213,7 @@ export function ProductForm({
             <div className="max-h-full max-w-lg" onClick={(e) => e.stopPropagation()}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={imagemEscolhida ?? product?.image_url ?? ""}
+                src={fotoPreviewUrl}
                 alt=""
                 className="max-h-[80vh] w-full rounded-xl bg-white object-contain"
               />
@@ -276,12 +309,13 @@ export function ProductForm({
           {arquivoNome && <span className="text-xs text-neutral-500">{arquivoNome}</span>}
         </div>
         <input
+          ref={fileInputRef}
           id="image-upload"
           name="image"
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={(e) => setArquivoNome(e.target.files?.[0]?.name ?? null)}
+          onChange={handleArquivoSelecionado}
         />
         <input type="hidden" name="chosen_image_url" value={imagemEscolhida ?? ""} />
       </div>

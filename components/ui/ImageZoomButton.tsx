@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ImageOff } from "lucide-react";
 
 export function ImageZoomButton({
   src,
@@ -12,6 +13,18 @@ export function ImageZoomButton({
   thumbnailClassName: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [erro, setErro] = useState(false);
+
+  if (erro) {
+    return (
+      <div
+        className={`flex items-center justify-center bg-neutral-100 text-neutral-400 ${thumbnailClassName}`}
+        title="Não foi possível carregar a imagem"
+      >
+        <ImageOff size={16} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -21,7 +34,7 @@ export function ImageZoomButton({
         aria-label={alt ? `Ver foto ampliada de ${alt}` : "Ver foto ampliada"}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} className={thumbnailClassName} />
+        <img src={src} alt={alt} onError={() => setErro(true)} className={thumbnailClassName} />
       </button>
 
       {open && (

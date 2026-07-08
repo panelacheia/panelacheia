@@ -16,6 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   const [pesoModalAberto, setPesoModalAberto] = useState(false);
   const [peso, setPeso] = useState(1);
   const [confirmacaoAberta, setConfirmacaoAberta] = useState(false);
+  const [fotoComErro, setFotoComErro] = useState(false);
 
   function addToCart(qty: number) {
     addItem({
@@ -67,15 +68,16 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="flex flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
       <button
         type="button"
-        onClick={() => product.image_url && setFotoAmpliada(true)}
+        onClick={() => product.image_url && !fotoComErro && setFotoAmpliada(true)}
         className="relative aspect-square bg-neutral-100"
         aria-label={`Ver foto ampliada de ${product.name}`}
       >
-        {product.image_url ? (
+        {product.image_url && !fotoComErro ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={product.image_url}
             alt={product.name}
+            onError={() => setFotoComErro(true)}
             className="absolute inset-0 h-full w-full object-contain p-2"
           />
         ) : (
