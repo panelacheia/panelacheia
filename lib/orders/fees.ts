@@ -1,3 +1,4 @@
+export const PEDIDO_MINIMO_CENTS = 8000;
 export const RETIRADA_FEE_CENTS = 400;
 export const ENTREGA_FEE_PERTO_CENTS = 800;
 export const ENTREGA_FEE_LONGE_CENTS = 1600;

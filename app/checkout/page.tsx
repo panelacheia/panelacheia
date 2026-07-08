@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/lib/cart/cartStore";
+import { PEDIDO_MINIMO_CENTS, formatarCentavos } from "@/lib/orders/fees";
 import { FulfillmentToggle } from "@/components/checkout/FulfillmentToggle";
 import { PaymentMethodSelect } from "@/components/checkout/PaymentMethodSelect";
 import { AddressForm, type EnderecoEntrega } from "@/components/checkout/AddressForm";
@@ -79,8 +80,11 @@ export default function CheckoutPage() {
     fulfillmentType === "retirada" ||
     (endereco.street && endereco.number && endereco.neighborhood && endereco.city && endereco.state);
 
+  const atingiuMinimo = subtotalCents >= PEDIDO_MINIMO_CENTS;
+
   const podeEnviar =
     items.length > 0 &&
+    atingiuMinimo &&
     customerName.trim().length > 0 &&
     customerPhone.trim().length > 0 &&
     paymentMethod !== null &&
@@ -88,6 +92,13 @@ export default function CheckoutPage() {
     !submitting;
 
   const camposFaltando: string[] = [];
+  if (!atingiuMinimo) {
+    camposFaltando.push(
+      `Pedido mínimo de ${formatarCentavos(PEDIDO_MINIMO_CENTS)} (faltam ${formatarCentavos(
+        PEDIDO_MINIMO_CENTS - subtotalCents
+      )})`
+    );
+  }
   if (!customerName.trim()) camposFaltando.push("Seu nome");
   if (!customerPhone.trim()) camposFaltando.push("Telefone / WhatsApp");
   if (fulfillmentType === "entrega") {

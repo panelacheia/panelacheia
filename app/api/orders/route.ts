@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { calcularTaxaEntrega, RETIRADA_FEE_CENTS } from "@/lib/orders/fees";
+import { calcularTaxaEntrega, RETIRADA_FEE_CENTS, PEDIDO_MINIMO_CENTS, formatarCentavos } from "@/lib/orders/fees";
 import { geocodeEndereco } from "@/lib/geo/nominatim";
 import { distanciaAteALojaKm } from "@/lib/geo/haversine";
 import { buildWhatsappMessage } from "@/lib/whatsapp/buildMessage";
@@ -52,6 +52,13 @@ export async function POST(req: NextRequest) {
   }
 
   const subtotalCents = orderItems.reduce((sum, i) => sum + i.line_total_cents, 0);
+
+  if (subtotalCents < PEDIDO_MINIMO_CENTS) {
+    return NextResponse.json(
+      { error: `Pedido mínimo de ${formatarCentavos(PEDIDO_MINIMO_CENTS)}.` },
+      { status: 400 }
+    );
+  }
 
   let deliveryFeeCents = RETIRADA_FEE_CENTS;
   let deliveryAddress: string | undefined;

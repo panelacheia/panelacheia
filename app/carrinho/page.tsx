@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/lib/cart/cartStore";
-import { formatarCentavos } from "@/lib/orders/fees";
+import { formatarCentavos, PEDIDO_MINIMO_CENTS } from "@/lib/orders/fees";
 import { WeightSelector } from "@/components/ui/WeightSelector";
 
 export default function CarrinhoPage() {
   const { items, updateQuantity, removeItem, subtotalCents } = useCart();
+  const faltaParaMinimo = PEDIDO_MINIMO_CENTS - subtotalCents;
+  const atingiuMinimo = faltaParaMinimo <= 0;
 
   if (items.length === 0) {
     return (
@@ -101,13 +103,30 @@ export default function CarrinhoPage() {
         <span className="text-lg font-bold">{formatarCentavos(subtotalCents)}</span>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2">
-        <Link
-          href="/checkout"
-          className="block rounded-xl bg-brand-primary px-4 py-3 text-center font-semibold text-white hover:bg-brand-primary-dark"
-        >
-          Finalizar pedido
-        </Link>
+      {!atingiuMinimo && (
+        <p className="mt-3 text-center text-sm text-brand-secondary">
+          Faltam {formatarCentavos(faltaParaMinimo)} para atingir o pedido mínimo de{" "}
+          {formatarCentavos(PEDIDO_MINIMO_CENTS)}.
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-col gap-2">
+        {atingiuMinimo ? (
+          <Link
+            href="/checkout"
+            className="block rounded-xl bg-brand-primary px-4 py-3 text-center font-semibold text-white hover:bg-brand-primary-dark"
+          >
+            Finalizar pedido
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="rounded-xl bg-neutral-300 px-4 py-3 text-center font-semibold text-white cursor-not-allowed"
+          >
+            Finalizar pedido
+          </button>
+        )}
         <Link
           href="/"
           className="block rounded-xl border border-brand-primary px-4 py-3 text-center font-semibold text-brand-primary hover:bg-brand-primary/5"
