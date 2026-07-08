@@ -9,6 +9,7 @@ import { FulfillmentToggle } from "@/components/checkout/FulfillmentToggle";
 import { PaymentMethodSelect } from "@/components/checkout/PaymentMethodSelect";
 import { AddressForm, type EnderecoEntrega } from "@/components/checkout/AddressForm";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { formatPhoneBR } from "@/lib/format/phone";
 import type { CreateOrderRequest, CreateOrderResponse, FulfillmentType, PaymentMethod } from "@/lib/types";
 
 const ENDERECO_VAZIO: EnderecoEntrega = {
@@ -182,9 +183,10 @@ export default function CheckoutPage() {
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Telefone / WhatsApp</label>
           <input
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-base focus:border-brand-primary focus:outline-none"
             value={customerPhone}
-            onChange={(e) => setCustomerPhone(e.target.value)}
+            onChange={(e) => setCustomerPhone(formatPhoneBR(e.target.value))}
+            inputMode="numeric"
             placeholder="(14) 90000-0000"
           />
         </div>
