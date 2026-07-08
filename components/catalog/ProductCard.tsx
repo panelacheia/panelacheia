@@ -76,7 +76,7 @@ export function ProductCard({ product }: { product: Product }) {
           <img
             src={product.image_url}
             alt={product.name}
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-neutral-300">
@@ -148,7 +148,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col gap-2 p-3">
         <div>
-          <p className="line-clamp-2 text-sm font-medium leading-tight">{product.name}</p>
+          <p className="line-clamp-2 min-h-[2.25rem] text-sm font-medium leading-tight">{product.name}</p>
           <p className="text-xs text-neutral-500">{product.unit}</p>
         </div>
 
