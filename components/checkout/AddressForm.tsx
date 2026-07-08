@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { buscarCep } from "@/lib/viacep";
+import { formatCepBR } from "@/lib/format/cep";
 
 export type EnderecoEntrega = {
   cep: string;
@@ -23,7 +24,8 @@ export function AddressForm({
   const [buscandoCep, setBuscandoCep] = useState(false);
   const [cepNaoEncontrado, setCepNaoEncontrado] = useState(false);
 
-  async function handleCepChange(cep: string) {
+  async function handleCepChange(rawCep: string) {
+    const cep = formatCepBR(rawCep);
     onChange({ ...value, cep });
     setCepNaoEncontrado(false);
 
