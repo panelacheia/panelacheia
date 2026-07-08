@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Category, Product } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { isRedirectError } from "@/lib/isRedirectError";
 
 type ImageResult = { original: string; thumbnail: string; title: string };
 
@@ -85,9 +86,10 @@ export function ProductForm({
     startTransition(async () => {
       try {
         await action(pendingFormData);
+        setPendingFormData(null);
       } catch (e) {
+        if (isRedirectError(e)) throw e; // navegação de sucesso, deixa o Next.js continuar
         setErro(e instanceof Error ? e.message : "Erro ao salvar produto.");
-      } finally {
         setPendingFormData(null);
       }
     });
@@ -109,7 +111,7 @@ export function ProductForm({
         />
       </div>
 
-      <div className={`grid gap-3 ${isPromo ? "grid-cols-3" : "grid-cols-2"}`}>
+      <div className={`grid grid-cols-1 gap-3 ${isPromo ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Preço (R$)</label>
           <input
