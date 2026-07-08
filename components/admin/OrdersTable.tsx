@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Eye } from "lucide-react";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { PaymentStatusSelect } from "./PaymentStatusSelect";
 import type { PaymentStatus } from "@/lib/types";
@@ -28,16 +29,13 @@ export function OrdersTable({ orders }: { orders: OrderRow[] }) {
             <th className="px-3 py-2">Tipo</th>
             <th className="px-3 py-2">Total</th>
             <th className="px-3 py-2">Pagamento</th>
+            <th className="px-3 py-2" />
           </tr>
         </thead>
         <tbody>
           {orders.map((o) => (
             <tr key={o.id} className="border-b border-neutral-100 last:border-0">
-              <td className="px-3 py-2">
-                <Link href={`/admin/pedidos/${o.id}`} className="font-medium text-brand-primary hover:underline">
-                  #{o.order_number}
-                </Link>
-              </td>
+              <td className="px-3 py-2 font-medium text-neutral-700">#{o.order_number}</td>
               <td className="px-3 py-2 text-neutral-600">
                 {new Date(o.created_at).toLocaleString("pt-BR")}
               </td>
@@ -46,6 +44,15 @@ export function OrdersTable({ orders }: { orders: OrderRow[] }) {
               <td className="px-3 py-2">{formatarCentavos(o.total_cents)}</td>
               <td className="px-3 py-2">
                 <PaymentStatusSelect id={o.id} status={o.payment_status} />
+              </td>
+              <td className="px-3 py-2 text-right">
+                <Link
+                  href={`/admin/pedidos/${o.id}`}
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white"
+                >
+                  <Eye size={14} />
+                  Ver pedido
+                </Link>
               </td>
             </tr>
           ))}
