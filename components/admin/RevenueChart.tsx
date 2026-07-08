@@ -10,14 +10,14 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
   const max = Math.max(1, ...data.map((d) => d.totalCents));
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-3.5">
-      <h2 className="mb-3 inline-block rounded-md bg-brand-primary px-2 py-1 text-xs font-semibold text-white">
+    <div className="rounded-xl border border-neutral-200 bg-white p-4">
+      <h2 className="mb-3 inline-block rounded-md bg-brand-primary px-2.5 py-1.5 text-sm font-semibold text-white">
         Vendas nos últimos 14 dias
       </h2>
 
       <div className="overflow-x-auto">
         <div className="min-w-[560px]">
-          <div className="relative flex h-28 items-end gap-1.5">
+          <div className="relative flex h-36 items-end gap-1.5">
             {data.map((d, i) => {
               const heightPct = (d.totalCents / max) * 100;
               return (
@@ -42,7 +42,7 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
             })}
           </div>
 
-          <div className="mt-2 flex gap-1.5 text-xs font-medium text-neutral-500">
+          <div className="mt-2 flex gap-1.5 text-sm font-medium text-neutral-500">
             {data.map((d) => (
               <span key={d.date} className="flex-1 text-center">
                 {d.label.slice(0, 5)}
