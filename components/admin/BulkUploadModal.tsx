@@ -48,7 +48,7 @@ export function BulkUploadModal() {
         }))
       );
       setResultado(result);
-      if (result.created > 0) router.refresh();
+      if (result.created.length > 0) router.refresh();
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao processar a planilha.");
     } finally {
@@ -142,12 +142,19 @@ export function BulkUploadModal() {
 
             {resultado && (
               <div className="flex flex-col gap-2 text-sm">
-                {resultado.created > 0 && (
-                  <p className="flex items-center gap-2 font-medium text-green-700">
-                    <CheckCircle2 size={16} />
-                    {resultado.created} produto{resultado.created > 1 ? "s" : ""} criado
-                    {resultado.created > 1 ? "s" : ""} com sucesso.
-                  </p>
+                {resultado.created.length > 0 && (
+                  <div>
+                    <p className="mb-1 flex items-center gap-2 font-medium text-green-700">
+                      <CheckCircle2 size={16} />
+                      {resultado.created.length} produto{resultado.created.length > 1 ? "s" : ""}{" "}
+                      criado{resultado.created.length > 1 ? "s" : ""} com sucesso:
+                    </p>
+                    <ul className="flex flex-col gap-1 rounded-lg bg-green-50 p-3 text-xs text-green-800">
+                      {resultado.created.map((nome, i) => (
+                        <li key={i}>{nome}</li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
                 {resultado.errors.length > 0 && (
                   <div>

@@ -142,7 +142,7 @@ export type BulkProductRow = {
 };
 
 export type BulkImportError = { row: number; message: string };
-export type BulkImportResult = { created: number; errors: BulkImportError[] };
+export type BulkImportResult = { created: string[]; errors: BulkImportError[] };
 
 function parsePrecoReais(value: string): number | null {
   const trimmed = value.trim();
@@ -187,7 +187,7 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
       .select("id, name");
     if (error) {
       return {
-        created: 0,
+        created: [],
         errors: [{ row: 0, message: `Falha ao criar categorias novas: ${error.message}` }],
       };
     }
@@ -272,14 +272,17 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
   if (toInsert.length > 0) {
     const { error } = await supabase.from("product").insert(toInsert);
     if (error) {
-      return { created: 0, errors: [...errors, { row: 0, message: `Falha ao salvar produtos: ${error.message}` }] };
+      return {
+        created: [],
+        errors: [...errors, { row: 0, message: `Falha ao salvar produtos: ${error.message}` }],
+      };
     }
   }
 
   revalidatePath("/admin/produtos");
   revalidatePath("/admin/categorias");
   revalidatePath("/");
-  return { created: toInsert.length, errors };
+  return { created: toInsert.map((p) => p.name), errors };
 }
 
 export async function toggleProductField(
