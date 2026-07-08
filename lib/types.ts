@@ -20,7 +20,7 @@ export type Product = {
 
 export type FulfillmentType = "retirada" | "entrega";
 export type PaymentMethod = "cartao" | "dinheiro" | "pix";
-export type PaymentStatus = "pendente" | "pago" | "nao_pago";
+export type PaymentStatus = "pendente" | "pago" | "cancelado";
 
 export type CartItem = {
   productId: string;

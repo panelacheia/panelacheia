@@ -7,7 +7,7 @@ import type { PaymentStatus } from "@/lib/types";
 const STYLE: Record<PaymentStatus, string> = {
   pago: "bg-green-100 text-green-700 border-green-300",
   pendente: "bg-yellow-100 text-yellow-700 border-yellow-300",
-  nao_pago: "bg-red-100 text-brand-secondary border-red-300",
+  cancelado: "bg-red-100 text-brand-secondary border-red-300",
 };
 
 export function PaymentStatusSelect({ id, status }: { id: string; status: PaymentStatus }) {
@@ -28,7 +28,7 @@ export function PaymentStatusSelect({ id, status }: { id: string; status: Paymen
     >
       <option value="pendente">Pendente</option>
       <option value="pago">Pago</option>
-      <option value="nao_pago">Não pago</option>
+      <option value="cancelado">Cancelado</option>
     </select>
   );
 }

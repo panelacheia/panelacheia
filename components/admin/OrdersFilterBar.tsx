@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Filter } from "lucide-react";
+import { Calendar, Filter, CreditCard } from "lucide-react";
+import type { PaymentStatus } from "@/lib/types";
 
 function hojeISO() {
   return new Date().toISOString().slice(0, 10);
@@ -11,19 +12,23 @@ function hojeISO() {
 export function OrdersFilterBar({
   defaultFrom,
   defaultTo,
+  defaultPayment,
 }: {
   defaultFrom: string;
   defaultTo: string;
+  defaultPayment: PaymentStatus | "";
 }) {
   const router = useRouter();
 
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(defaultTo);
+  const [payment, setPayment] = useState<PaymentStatus | "">(defaultPayment);
 
-  function aplicar(novoFrom: string, novoTo: string) {
+  function aplicar(novoFrom: string, novoTo: string, novoPayment: PaymentStatus | "") {
     const params = new URLSearchParams();
     params.set("from", novoFrom);
     params.set("to", novoTo);
+    params.set("payment", novoPayment);
     router.push(`/admin/pedidos?${params.toString()}`);
   }
 
@@ -31,13 +36,14 @@ export function OrdersFilterBar({
     const hoje = hojeISO();
     setFrom(hoje);
     setTo(hoje);
-    aplicar(hoje, hoje);
+    aplicar(hoje, hoje, payment);
   }
 
   function handleTudo() {
     setFrom("");
     setTo("");
-    aplicar("", "");
+    setPayment("");
+    aplicar("", "", "");
   }
 
   return (
@@ -61,6 +67,20 @@ export function OrdersFilterBar({
         />
       </div>
 
+      <div className="flex items-center gap-1.5">
+        <CreditCard size={16} className="text-neutral-400" />
+        <select
+          value={payment}
+          onChange={(e) => setPayment(e.target.value as PaymentStatus | "")}
+          className="rounded-lg border border-neutral-300 px-2 py-1.5 text-sm focus:border-brand-primary focus:outline-none"
+        >
+          <option value="">Todos os pagamentos</option>
+          <option value="pendente">Pendente</option>
+          <option value="pago">Pago</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+
       <button
         type="button"
         onClick={handleHoje}
@@ -78,7 +98,7 @@ export function OrdersFilterBar({
 
       <button
         type="button"
-        onClick={() => aplicar(from, to)}
+        onClick={() => aplicar(from, to, payment)}
         className="flex items-center gap-1.5 rounded-lg bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark"
       >
         <Filter size={14} />
