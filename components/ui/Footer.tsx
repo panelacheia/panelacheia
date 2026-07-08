@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Clock, MapPin, Phone } from "lucide-react";
+import { InstagramIcon, FacebookIcon } from "./SocialIcons";
 
 export function Footer() {
   const pathname = usePathname();
@@ -13,14 +14,34 @@ export function Footer() {
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <div>
-            <div className="mb-3 inline-block rounded-lg bg-white px-3 py-2">
-              <Image
-                src="/logos/panelacheia.png"
-                alt="Panela Cheia"
-                width={1600}
-                height={828}
-                className="h-10 w-auto"
-              />
+            <div className="mb-3 flex items-center gap-3">
+              <div className="inline-block rounded-lg bg-white px-3 py-2">
+                <Image
+                  src="/logos/panelacheia.png"
+                  alt="Panela Cheia"
+                  width={1600}
+                  height={828}
+                  className="h-10 w-auto"
+                />
+              </div>
+              <a
+                href="https://www.instagram.com/panelacheia_bauru"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+              >
+                <InstagramIcon size={18} />
+              </a>
+              <a
+                href="https://www.facebook.com/panelacheiabauru"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+              >
+                <FacebookIcon size={18} />
+              </a>
             </div>
             <p className="text-sm text-white/60">
               Frescor e qualidade todos os dias, direto pra sua casa.
