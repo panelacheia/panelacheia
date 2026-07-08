@@ -87,7 +87,7 @@ export function ProductCard({ product }: { product: Product }) {
                   {formatarCentavos(product.price_cents)}
                 </p>
                 {product.is_promo && product.original_price_cents && (
-                  <p className="text-xs text-neutral-400 line-through">
+                  <p className="text-xs text-brand-secondary line-through">
                     {formatarCentavos(product.original_price_cents)}
                   </p>
                 )}
@@ -138,7 +138,7 @@ export function ProductCard({ product }: { product: Product }) {
             {formatarCentavos(product.price_cents)}
           </p>
           {product.is_promo && product.original_price_cents && (
-            <p className="text-xs text-neutral-400 line-through">
+            <p className="text-xs text-brand-secondary line-through">
               {formatarCentavos(product.original_price_cents)}
             </p>
           )}
