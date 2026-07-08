@@ -18,6 +18,11 @@ export type Product = {
   sort_order: number;
 };
 
+export type StorageImage = {
+  name: string;
+  url: string;
+};
+
 export type FulfillmentType = "retirada" | "entrega";
 export type PaymentMethod = "cartao" | "dinheiro" | "pix";
 export type PaymentStatus = "pendente" | "pago" | "cancelado";

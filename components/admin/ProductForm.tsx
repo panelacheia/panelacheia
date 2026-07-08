@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { Category, Product } from "@/lib/types";
+import type { Category, Product, StorageImage } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { isRedirectError } from "@/lib/isRedirectError";
 
@@ -30,6 +30,10 @@ export function ProductForm({
   const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
   const [fotoAtualAmpliada, setFotoAtualAmpliada] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+
+  const [bibliotecaAberta, setBibliotecaAberta] = useState(false);
+  const [carregandoBiblioteca, setCarregandoBiblioteca] = useState(false);
+  const [imagensBiblioteca, setImagensBiblioteca] = useState<StorageImage[]>([]);
 
   async function handleBuscarFotos() {
     if (!nome.trim()) {
@@ -74,6 +78,29 @@ export function ProductForm({
     } finally {
       setSelecionando(null);
     }
+  }
+
+  async function handleAbrirBiblioteca() {
+    setErro(null);
+    setBibliotecaAberta(true);
+    setCarregandoBiblioteca(true);
+    try {
+      const res = await fetch("/api/admin/product-images");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Não foi possível carregar as imagens.");
+      setImagensBiblioteca(data.images);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Não foi possível carregar as imagens.");
+    } finally {
+      setCarregandoBiblioteca(false);
+    }
+  }
+
+  function handleEscolherDaBiblioteca(img: StorageImage) {
+    setImagemEscolhida(img.url);
+    setOriginalEscolhido(null);
+    setArquivoNome(null);
+    setBibliotecaAberta(false);
   }
 
   function handleSubmit(formData: FormData) {
@@ -219,7 +246,7 @@ export function ProductForm({
           </div>
         )}
 
-        <div className="mb-2 flex items-center gap-2">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleBuscarFotos}
@@ -228,7 +255,60 @@ export function ProductForm({
           >
             {buscandoFotos ? "Buscando..." : "Buscar fotos no Google"}
           </button>
+          <button
+            type="button"
+            onClick={handleAbrirBiblioteca}
+            className="rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white"
+          >
+            Escolher da biblioteca
+          </button>
         </div>
+
+        {bibliotecaAberta && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setBibliotecaAberta(false)}
+          >
+            <div
+              className="flex max-h-[80vh] w-full max-w-2xl flex-col gap-3 rounded-xl bg-white p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Escolher imagem já enviada</h3>
+                <button
+                  type="button"
+                  onClick={() => setBibliotecaAberta(false)}
+                  className="text-xs text-neutral-500 hover:underline"
+                >
+                  Fechar
+                </button>
+              </div>
+
+              {carregandoBiblioteca ? (
+                <p className="py-8 text-center text-sm text-neutral-500">Carregando...</p>
+              ) : imagensBiblioteca.length === 0 ? (
+                <p className="py-8 text-center text-sm text-neutral-500">
+                  Nenhuma imagem enviada ainda. Envie fotos na aba &quot;Imagens&quot;.
+                </p>
+              ) : (
+                <div className="grid grid-cols-4 gap-2 overflow-y-auto sm:grid-cols-6">
+                  {imagensBiblioteca.map((img) => (
+                    <button
+                      key={img.name}
+                      type="button"
+                      onClick={() => handleEscolherDaBiblioteca(img)}
+                      title={img.name}
+                      className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.url} alt={img.name} className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {resultados.length > 0 && (
           <div className="mb-2">

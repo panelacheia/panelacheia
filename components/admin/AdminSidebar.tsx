@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Receipt, Package, Tags, X } from "lucide-react";
+import { LayoutDashboard, Receipt, Package, Tags, Images, X } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
 
 const NAV_ITEMS = [
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/admin/pedidos", label: "Pedidos", icon: Receipt },
   { href: "/admin/produtos", label: "Produtos", icon: Package },
   { href: "/admin/categorias", label: "Categorias", icon: Tags },
+  { href: "/admin/imagens", label: "Imagens", icon: Images },
 ];
 
 export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
