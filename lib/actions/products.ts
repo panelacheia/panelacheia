@@ -292,13 +292,11 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
   return { created: toInsert.map((p) => p.name), errors };
 }
 
-export async function toggleProductField(
-  id: string,
-  field: "is_active" | "is_promo",
-  value: boolean
-) {
+// Só "is_active": alternar "is_promo" por aqui pularia a exigência do "preço antes"
+// (só validada no formulário completo em createProduct/updateProduct).
+export async function toggleProductActive(id: string, value: boolean) {
   const supabase = await requireStaff();
-  const { error } = await supabase.from("product").update({ [field]: value }).eq("id", id);
+  const { error } = await supabase.from("product").update({ is_active: value }).eq("id", id);
   if (error) throw new Error(`Não foi possível atualizar o produto: ${error.message}`);
 
   revalidatePath("/admin/produtos");

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Pencil, Trash2, ImageOff } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
-import { deleteProduct, toggleProductField } from "@/lib/actions/products";
+import { deleteProduct, toggleProductActive } from "@/lib/actions/products";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ImageZoomButton } from "@/components/ui/ImageZoomButton";
 
@@ -14,10 +14,10 @@ export function ProductTable({ products }: { products: Product[] }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
-  function handleToggle(id: string, field: "is_active" | "is_promo", value: boolean) {
+  function handleToggle(id: string, value: boolean) {
     setBusyId(id);
     startTransition(async () => {
-      await toggleProductField(id, field, value);
+      await toggleProductActive(id, value);
       setBusyId(null);
     });
   }
@@ -78,15 +78,17 @@ export function ProductTable({ products }: { products: Product[] }) {
                   type="checkbox"
                   checked={p.is_active}
                   disabled={isPending && busyId === p.id}
-                  onChange={(e) => handleToggle(p.id, "is_active", e.target.checked)}
+                  onChange={(e) => handleToggle(p.id, e.target.checked)}
                 />
               </td>
               <td className="px-3 py-2">
                 <input
                   type="checkbox"
                   checked={p.is_promo}
-                  disabled={isPending && busyId === p.id}
-                  onChange={(e) => handleToggle(p.id, "is_promo", e.target.checked)}
+                  disabled
+                  readOnly
+                  title="Só dá pra mudar editando o produto (precisa do preço antes)"
+                  className="cursor-not-allowed"
                 />
               </td>
               <td className="px-3 py-2 text-right">
