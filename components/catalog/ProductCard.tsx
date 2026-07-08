@@ -278,10 +278,10 @@ export function ProductCard({ product }: { product: Product }) {
                 Continuar comprando
               </button>
               <Link
-                href="/checkout"
+                href="/carrinho"
                 className="block rounded-lg border border-neutral-300 px-4 py-2.5 text-center text-sm font-medium hover:bg-neutral-100"
               >
-                Finalizar pedido
+                Ver carrinho
               </Link>
             </div>
           </div>
