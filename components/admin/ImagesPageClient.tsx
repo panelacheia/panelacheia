@@ -6,6 +6,15 @@ import type { StorageImage } from "@/lib/types";
 import { uploadImages, deleteImage } from "@/lib/actions/images";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
+const LIMITE_ARMAZENAMENTO_BYTES = 1024 * 1024 * 1024; // 1 GB — plano gratuito do Supabase
+
+function formatarBytes(bytes: number) {
+  if (bytes >= 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024 * 1024)).toFixed(2).replace(".", ",")} GB`;
+  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1).replace(".", ",")} MB`;
+  if (bytes >= 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${bytes} B`;
+}
+
 export function ImagesPageClient({ images }: { images: StorageImage[] }) {
   const [isPending, startTransition] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
@@ -19,6 +28,10 @@ export function ImagesPageClient({ images }: { images: StorageImage[] }) {
   const imagensFiltradas = images.filter((img) =>
     img.name.toLowerCase().includes(busca.toLowerCase())
   );
+
+  const bytesUsados = images.reduce((soma, img) => soma + img.sizeBytes, 0);
+  const percentualUsado = Math.min(100, (bytesUsados / LIMITE_ARMAZENAMENTO_BYTES) * 100);
+  const pertoDoLimite = percentualUsado >= 80;
 
   function handleFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -66,12 +79,34 @@ export function ImagesPageClient({ images }: { images: StorageImage[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div>
           <h1 className="text-lg font-bold">Imagens</h1>
           <p className="text-sm text-neutral-500">
             Todas as fotos já enviadas para o banco de dados. {images.length} no total.
           </p>
+        </div>
+
+        <div className="flex w-full flex-col gap-1 sm:max-w-xs">
+          <div className="flex items-center justify-between text-xs text-neutral-500">
+            <span>Armazenamento</span>
+            <span className={pertoDoLimite ? "font-semibold text-brand-secondary" : ""}>
+              {formatarBytes(bytesUsados)} de {formatarBytes(LIMITE_ARMAZENAMENTO_BYTES)}
+            </span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+            <div
+              className={`h-full rounded-full transition-all ${
+                pertoDoLimite ? "bg-brand-secondary" : "bg-brand-primary"
+              }`}
+              style={{ width: `${percentualUsado}%` }}
+            />
+          </div>
+          {pertoDoLimite && (
+            <p className="text-[11px] text-brand-secondary">
+              Chegando perto do limite do plano gratuito.
+            </p>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

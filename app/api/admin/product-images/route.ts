@@ -23,6 +23,7 @@ export async function GET() {
     .map((f) => ({
       name: f.name,
       url: supabase.storage.from("product-images").getPublicUrl(f.name).data.publicUrl,
+      sizeBytes: (f.metadata as { size?: number } | null)?.size ?? 0,
     }));
 
   return NextResponse.json({ images });

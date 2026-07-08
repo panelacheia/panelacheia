@@ -21,6 +21,7 @@ export type Product = {
 export type StorageImage = {
   name: string;
   url: string;
+  sizeBytes: number;
 };
 
 export type FulfillmentType = "retirada" | "entrega";
