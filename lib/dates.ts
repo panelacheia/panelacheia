@@ -22,3 +22,13 @@ export function brazilDayStartISO(dateISO: string): string {
 export function brazilDayEndISO(dateISO: string): string {
   return `${dateISO}T23:59:59-03:00`;
 }
+
+const WEEKDAY_LABELS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+// Meio-dia UTC do dia (já calculado no fuso de Brasília) nunca cruza a virada de data,
+// então dá pra usar getUTCDay() sem se preocupar com o fuso do runtime.
+export function brazilWeekdayLabel(date: Date): string {
+  const dateISO = toBrazilDateISO(date);
+  const weekdayIndex = new Date(`${dateISO}T12:00:00Z`).getUTCDay();
+  return WEEKDAY_LABELS[weekdayIndex];
+}
