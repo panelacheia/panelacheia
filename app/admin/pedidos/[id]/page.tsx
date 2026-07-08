@@ -14,6 +14,7 @@ import {
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatarCentavos } from "@/lib/orders/fees";
+import { formatQuantidade } from "@/lib/orders/quantity";
 import { PaymentStatusSelect } from "@/components/admin/PaymentStatusSelect";
 import { InternalNotesField } from "@/components/admin/InternalNotesField";
 import { WhatsAppMessageCard } from "@/components/admin/WhatsAppMessageCard";
@@ -133,7 +134,7 @@ export default async function PedidoDetailPage({
                       </div>
                     )}
                     <span className="flex-1 text-sm">
-                      {item.quantity}x {item.product_name}
+                      {formatQuantidade(item.quantity, item.unit)} {item.product_name}
                     </span>
                     <span className="text-sm font-medium">
                       {formatarCentavos(item.line_total_cents)}

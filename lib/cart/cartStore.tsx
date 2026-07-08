@@ -79,10 +79,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [items]
   );
 
-  const itemCount = useMemo(
-    () => items.reduce((sum, i) => sum + i.quantity, 0),
-    [items]
-  );
+  // Conta produtos distintos, não a soma das quantidades — misturar kg (fracionário)
+  // com unidades (inteiro) no mesmo contador ficaria com números estranhos tipo "3.5".
+  const itemCount = useMemo(() => items.length, [items]);
 
   const value = useMemo(
     () => ({ items, addItem, updateQuantity, removeItem, clear, subtotalCents, itemCount }),

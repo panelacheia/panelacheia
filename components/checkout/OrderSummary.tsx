@@ -2,6 +2,7 @@
 
 import type { CartItem, FulfillmentType } from "@/lib/types";
 import { formatarCentavos, RETIRADA_FEE_CENTS } from "@/lib/orders/fees";
+import { formatQuantidade } from "@/lib/orders/quantity";
 
 export function OrderSummary({
   items,
@@ -27,7 +28,7 @@ export function OrderSummary({
         {items.map((item) => (
           <li key={item.productId} className="flex justify-between">
             <span>
-              {item.quantity}x {item.name}
+              {formatQuantidade(item.quantity, item.unit)} {item.name}
             </span>
             <span>{formatarCentavos(item.unitPriceCents * item.quantity)}</span>
           </li>

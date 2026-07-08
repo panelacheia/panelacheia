@@ -142,13 +142,15 @@ export function ProductForm({
 
         <div>
           <label className="mb-1 block text-xs font-medium text-neutral-600">Unidade</label>
-          <input
+          <select
             name="unit"
-            defaultValue={product?.unit}
+            defaultValue={product?.unit === "kg" ? "kg" : "un"}
             required
-            placeholder="kg, un, pacote 500g..."
             className={inputClass}
-          />
+          >
+            <option value="un">Unidade (un)</option>
+            <option value="kg">Peso (kg)</option>
+          </select>
         </div>
       </div>
 

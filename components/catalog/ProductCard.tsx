@@ -6,9 +6,11 @@ import { ShoppingCart, X, CheckCircle2 } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { useCart } from "@/lib/cart/cartStore";
+import { WeightSelector } from "@/components/ui/WeightSelector";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const isKg = product.unit === "kg";
   const [quantity, setQuantity] = useState(1);
   const [fotoAmpliada, setFotoAmpliada] = useState(false);
   const [confirmacaoAberta, setConfirmacaoAberta] = useState(false);
@@ -94,25 +96,29 @@ export function ProductCard({ product }: { product: Product }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-lg border border-neutral-300">
-                  <button
-                    type="button"
-                    className="px-2 py-1 text-neutral-600"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    aria-label="Diminuir quantidade"
-                  >
-                    −
-                  </button>
-                  <span className="min-w-6 text-center text-sm">{quantity}</span>
-                  <button
-                    type="button"
-                    className="px-2 py-1 text-neutral-600"
-                    onClick={() => setQuantity((q) => q + 1)}
-                    aria-label="Aumentar quantidade"
-                  >
-                    +
-                  </button>
-                </div>
+                {isKg ? (
+                  <WeightSelector value={quantity} onChange={setQuantity} />
+                ) : (
+                  <div className="flex items-center rounded-lg border border-neutral-300">
+                    <button
+                      type="button"
+                      className="px-2 py-1 text-neutral-600"
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      aria-label="Diminuir quantidade"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-6 text-center text-sm">{quantity}</span>
+                    <button
+                      type="button"
+                      className="px-2 py-1 text-neutral-600"
+                      onClick={() => setQuantity((q) => q + 1)}
+                      aria-label="Aumentar quantidade"
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
 
                 <button
                   type="button"
@@ -145,25 +151,29 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center rounded-lg border border-neutral-300">
-            <button
-              type="button"
-              className="px-2 py-1 text-neutral-600"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              aria-label="Diminuir quantidade"
-            >
-              −
-            </button>
-            <span className="min-w-6 text-center text-sm">{quantity}</span>
-            <button
-              type="button"
-              className="px-2 py-1 text-neutral-600"
-              onClick={() => setQuantity((q) => q + 1)}
-              aria-label="Aumentar quantidade"
-            >
-              +
-            </button>
-          </div>
+          {isKg ? (
+            <WeightSelector value={quantity} onChange={setQuantity} />
+          ) : (
+            <div className="flex items-center rounded-lg border border-neutral-300">
+              <button
+                type="button"
+                className="px-2 py-1 text-neutral-600"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                aria-label="Diminuir quantidade"
+              >
+                −
+              </button>
+              <span className="min-w-6 text-center text-sm">{quantity}</span>
+              <button
+                type="button"
+                className="px-2 py-1 text-neutral-600"
+                onClick={() => setQuantity((q) => q + 1)}
+                aria-label="Aumentar quantidade"
+              >
+                +
+              </button>
+            </div>
+          )}
 
           <button
             type="button"

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/lib/cart/cartStore";
 import { formatarCentavos } from "@/lib/orders/fees";
+import { WeightSelector } from "@/components/ui/WeightSelector";
 
 export default function CarrinhoPage() {
   const { items, updateQuantity, removeItem, subtotalCents } = useCart();
@@ -52,25 +53,32 @@ export default function CarrinhoPage() {
               </p>
             </div>
 
-            <div className="flex items-center rounded-lg border border-neutral-300">
-              <button
-                type="button"
-                className="px-2 py-1 text-neutral-600"
-                onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                aria-label="Diminuir quantidade"
-              >
-                −
-              </button>
-              <span className="min-w-6 text-center text-sm">{item.quantity}</span>
-              <button
-                type="button"
-                className="px-2 py-1 text-neutral-600"
-                onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                aria-label="Aumentar quantidade"
-              >
-                +
-              </button>
-            </div>
+            {item.unit === "kg" ? (
+              <WeightSelector
+                value={item.quantity}
+                onChange={(kg) => updateQuantity(item.productId, kg)}
+              />
+            ) : (
+              <div className="flex items-center rounded-lg border border-neutral-300">
+                <button
+                  type="button"
+                  className="px-2 py-1 text-neutral-600"
+                  onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                  aria-label="Diminuir quantidade"
+                >
+                  −
+                </button>
+                <span className="min-w-6 text-center text-sm">{item.quantity}</span>
+                <button
+                  type="button"
+                  className="px-2 py-1 text-neutral-600"
+                  onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                  aria-label="Aumentar quantidade"
+                >
+                  +
+                </button>
+              </div>
+            )}
 
             <p className="w-20 text-right text-sm font-semibold">
               {formatarCentavos(item.unitPriceCents * item.quantity)}

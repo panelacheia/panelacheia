@@ -1,4 +1,5 @@
 import { formatarCentavos } from "@/lib/orders/fees";
+import { formatQuantidade } from "@/lib/orders/quantity";
 import type { FulfillmentType, PaymentMethod } from "@/lib/types";
 
 const NOMES_PAGAMENTO: Record<PaymentMethod, string> = {
@@ -46,12 +47,10 @@ export function buildWhatsappMessage(params: {
 
   const linhasItens = items
     .map((item) => {
-      const qtd = Number.isInteger(item.quantity)
-        ? item.quantity
-        : item.quantity.toLocaleString("pt-BR");
-      return `${qtd}x ${item.productName} (${item.unit}) — ${formatarCentavos(
+      const qtd = formatQuantidade(item.quantity, item.unit);
+      return `${qtd} ${item.productName} — ${formatarCentavos(
         item.unitPriceCents
-      )} = ${formatarCentavos(item.lineTotalCents)}`;
+      )}/${item.unit} = ${formatarCentavos(item.lineTotalCents)}`;
     })
     .join("\n");
 
