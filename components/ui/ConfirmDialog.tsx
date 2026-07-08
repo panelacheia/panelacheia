@@ -1,5 +1,7 @@
 "use client";
 
+import { createPortal } from "react-dom";
+
 export function ConfirmDialog({
   open,
   title,
@@ -28,7 +30,10 @@ export function ConfirmDialog({
       ? "bg-brand-secondary hover:opacity-90"
       : "bg-brand-primary hover:bg-brand-primary-dark";
 
-  return (
+  // Portal pro <body>: renderizar dentro da árvore normal pode cair sob um ancestral
+  // com CSS transform (ex: a sidebar do admin), o que quebra o `fixed` e prende o modal
+  // dentro da caixa do ancestral em vez de cobrir a tela toda.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={onCancel}
@@ -58,6 +63,7 @@ export function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
