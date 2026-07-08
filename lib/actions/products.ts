@@ -139,7 +139,33 @@ function parseSimNao(value: string, padrao: boolean): boolean {
 export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkImportResult> {
   const supabase = await requireStaff();
   const { data: categoriesData } = await supabase.from("category").select("id, name");
-  const categories = (categoriesData ?? []) as { id: string; name: string }[];
+  const categoryByNormalizedName = new Map<string, { id: string; name: string }>(
+    ((categoriesData ?? []) as { id: string; name: string }[]).map((c) => [normalize(c.name), c])
+  );
+
+  // Categoria informada na planilha que ainda não existe: cria automaticamente (uma por nome distinto).
+  const novasCategorias = new Map<string, string>(); // nome normalizado -> nome original (trim)
+  rows.forEach((row) => {
+    const nomeCategoria = row.categoria.trim();
+    const key = normalize(nomeCategoria);
+    if (nomeCategoria && !categoryByNormalizedName.has(key) && !novasCategorias.has(key)) {
+      novasCategorias.set(key, nomeCategoria);
+    }
+  });
+
+  if (novasCategorias.size > 0) {
+    const { data: criadas, error } = await supabase
+      .from("category")
+      .insert(Array.from(novasCategorias.values()).map((name) => ({ name })))
+      .select("id, name");
+    if (error) {
+      return {
+        created: 0,
+        errors: [{ row: 0, message: `Falha ao criar categorias novas: ${error.message}` }],
+      };
+    }
+    (criadas ?? []).forEach((c) => categoryByNormalizedName.set(normalize(c.name), c));
+  }
 
   const errors: BulkImportError[] = [];
   const toInsert: {
@@ -161,7 +187,12 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
       return;
     }
 
-    const categoria = categories.find((c) => normalize(c.name) === normalize(row.categoria));
+    const nomeCategoria = row.categoria.trim();
+    if (!nomeCategoria) {
+      errors.push({ row: linha, message: "Categoria é obrigatória." });
+      return;
+    }
+    const categoria = categoryByNormalizedName.get(normalize(nomeCategoria));
     if (!categoria) {
       errors.push({ row: linha, message: `Categoria "${row.categoria}" não encontrada.` });
       return;
@@ -212,6 +243,7 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
   }
 
   revalidatePath("/admin/produtos");
+  revalidatePath("/admin/categorias");
   revalidatePath("/");
   return { created: toInsert.length, errors };
 }

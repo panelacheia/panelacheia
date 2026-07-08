@@ -104,7 +104,7 @@ export function BulkUploadModal() {
                 <code>ativo</code> (sim/nao).
               </p>
               <p className="mb-2">
-                A <code>categoria</code> precisa ser igual ao nome de uma categoria já cadastrada.
+                Se a <code>categoria</code> ainda não existir, ela é criada automaticamente.
               </p>
               <button
                 type="button"
