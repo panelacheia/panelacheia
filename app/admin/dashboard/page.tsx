@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { formatQuantidade } from "@/lib/orders/quantity";
+import { formatarPercentual } from "@/lib/format";
 import { RevenueChart } from "@/components/admin/RevenueChart";
 import { StatTile } from "@/components/admin/StatTile";
 import { RankedBarCard, type RankedBarItem } from "@/components/admin/RankedBarCard";
@@ -29,6 +30,10 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   pix: "Pix",
 };
 const WEEKDAY_ORDER = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+function SectionTitle({ children }: { children: string }) {
+  return <h2 className="text-base font-bold text-neutral-800">{children}</h2>;
+}
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -205,11 +210,14 @@ export default async function AdminDashboardPage() {
     }))
     .sort((a, b) => b.valueCents - a.valueCents)
     .slice(0, 5);
+
+  const totalCategoriasCents = Array.from(porCategoria.values()).reduce((s, v) => s + v, 0);
   const categoriaItems: RankedBarItem[] = Array.from(porCategoria.entries())
     .map(([nome, totalCents]) => ({
       key: nome,
       label: nome,
-      metricLabel: formatarCentavos(totalCents),
+      metricLabel:
+        totalCategoriasCents > 0 ? formatarPercentual((totalCents / totalCategoriasCents) * 100) : "0%",
       valueCents: totalCents,
       barValue: totalCents,
     }))
@@ -223,99 +231,106 @@ export default async function AdminDashboardPage() {
   const produtosEmPromocao = produtos.filter((p) => p.is_promo).length;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile
-          label="Total de pedidos"
-          value={String(orders.length)}
-          secondary={formatarCentavos(somaCentavos(orders))}
-          tone="primary"
-        />
-        <StatTile
-          label="Pagos"
-          value={String(porStatus.pago.length)}
-          secondary={formatarCentavos(somaCentavos(porStatus.pago))}
-          tone="good"
-        />
-        <StatTile
-          label="Pendentes"
-          value={String(porStatus.pendente.length)}
-          secondary={formatarCentavos(somaCentavos(porStatus.pendente))}
-          tone="warning"
-        />
-        <StatTile
-          label="Cancelados"
-          value={String(porStatus.cancelado.length)}
-          secondary={formatarCentavos(somaCentavos(porStatus.cancelado))}
-          tone="critical"
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-3">
+        <SectionTitle>Pedidos</SectionTitle>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatTile
+            label="Total de pedidos"
+            value={String(orders.length)}
+            secondary={formatarCentavos(somaCentavos(orders))}
+            tone="primary"
+          />
+          <StatTile
+            label="Pagos"
+            value={String(porStatus.pago.length)}
+            secondary={formatarCentavos(somaCentavos(porStatus.pago))}
+            tone="good"
+          />
+          <StatTile
+            label="Pendentes"
+            value={String(porStatus.pendente.length)}
+            secondary={formatarCentavos(somaCentavos(porStatus.pendente))}
+            tone="warning"
+          />
+          <StatTile
+            label="Cancelados"
+            value={String(porStatus.cancelado.length)}
+            secondary={formatarCentavos(somaCentavos(porStatus.cancelado))}
+            tone="critical"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatTile
+            label="Total vendido (exclui cancelados)"
+            value={formatarCentavos(totalVendidoCents)}
+            tone="primary"
+          />
+          <StatTile label="Ticket médio" value={formatarCentavos(ticketMedioCents)} tone="primary" />
+          <StatTile
+            label="Taxa de cancelamento"
+            value={formatarPercentual(taxaCancelamentoPct)}
+            tone={taxaCancelamentoPct > 15 ? "critical" : taxaCancelamentoPct > 5 ? "warning" : "good"}
+          />
+          <StatTile
+            label="Frete arrecadado"
+            value={formatarCentavos(freteArrecadadoCents)}
+            tone="primary"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <SectionTitle>Vendas</SectionTitle>
+        <RevenueChart data={chartData} />
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <RankedBarCard title="Tipo de atendimento" items={tipoItems} />
+          <RankedBarCard title="Forma de pagamento" items={pagamentoItems} />
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <RankedBarCard title="Vendas por categoria" items={categoriaItems} />
+          <RankedBarCard title="Pedidos por dia da semana" items={semanaItems} />
+        </div>
+        <RankedBarCard
+          title="Mais vendidos (últimos 30 dias)"
+          items={maisVendidos}
+          emptyLabel="Nenhuma venda nos últimos 30 dias ainda."
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile
-          label="Total vendido (exclui cancelados)"
-          value={formatarCentavos(totalVendidoCents)}
-          tone="primary"
-        />
-        <StatTile label="Ticket médio" value={formatarCentavos(ticketMedioCents)} tone="primary" />
-        <StatTile
-          label="Taxa de cancelamento"
-          value={`${taxaCancelamentoPct.toFixed(1)}%`}
-          tone={taxaCancelamentoPct > 15 ? "critical" : taxaCancelamentoPct > 5 ? "warning" : "good"}
-        />
-        <StatTile
-          label="Frete arrecadado"
-          value={formatarCentavos(freteArrecadadoCents)}
-          tone="primary"
-        />
-      </div>
-
-      <RevenueChart data={chartData} />
-
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-        <RankedBarCard title="Tipo de atendimento" items={tipoItems} />
-        <RankedBarCard title="Forma de pagamento" items={pagamentoItems} />
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-        <RankedBarCard title="Vendas por categoria" items={categoriaItems} />
-        <RankedBarCard title="Pedidos por dia da semana" items={semanaItems} />
-      </div>
-
-      <RankedBarCard
-        title="Mais vendidos (últimos 30 dias)"
-        items={maisVendidos}
-        emptyLabel="Nenhuma venda nos últimos 30 dias ainda."
-      />
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatTile label="Clientes únicos" value={String(clientesUnicos)} tone="primary" />
-        <StatTile
-          label="Taxa de recompra"
-          value={`${taxaRecompraPct.toFixed(1)}%`}
-          secondary={`${clientesRecorrentes} cliente${clientesRecorrentes === 1 ? "" : "s"} voltou a comprar`}
-          tone="good"
-        />
-        <StatTile
-          label="Falhas de localização"
-          value={String(falhasGeocode)}
-          secondary={
-            pedidosEntrega.length > 0 ? `de ${pedidosEntrega.length} entregas` : "sem entregas ainda"
-          }
-          tone={falhasGeocode > 0 ? "warning" : "good"}
+      <div className="flex flex-col gap-3">
+        <SectionTitle>Clientes</SectionTitle>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <StatTile label="Clientes únicos" value={String(clientesUnicos)} tone="primary" />
+          <StatTile
+            label="Taxa de recompra"
+            value={formatarPercentual(taxaRecompraPct)}
+            secondary={`${clientesRecorrentes} cliente${clientesRecorrentes === 1 ? "" : "s"} voltou a comprar`}
+            tone="primary"
+          />
+        </div>
+        <RankedBarCard
+          title="Melhores clientes"
+          items={melhoresClientes}
+          emptyLabel="Nenhum pedido ainda."
         />
       </div>
 
-      <RankedBarCard
-        title="Melhores clientes"
-        items={melhoresClientes}
-        emptyLabel="Nenhum pedido ainda."
-      />
-
-      <div className="grid grid-cols-3 gap-3">
-        <StatTile label="Produtos ativos" value={String(produtosAtivos)} tone="good" />
-        <StatTile label="Produtos inativos" value={String(produtosInativos)} tone="critical" />
-        <StatTile label="Em promoção" value={String(produtosEmPromocao)} tone="warning" />
+      <div className="flex flex-col gap-3">
+        <SectionTitle>Operação e catálogo</SectionTitle>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatTile
+            label="Falhas de localização"
+            value={String(falhasGeocode)}
+            secondary={
+              pedidosEntrega.length > 0 ? `de ${pedidosEntrega.length} entregas` : "sem entregas ainda"
+            }
+            tone={falhasGeocode > 0 ? "warning" : "good"}
+          />
+          <StatTile label="Produtos ativos" value={String(produtosAtivos)} tone="good" />
+          <StatTile label="Produtos inativos" value={String(produtosInativos)} tone="primary" />
+          <StatTile label="Em promoção" value={String(produtosEmPromocao)} tone="primary" />
+        </div>
       </div>
     </div>
   );
