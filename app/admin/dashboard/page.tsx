@@ -68,18 +68,26 @@ export default async function AdminDashboardPage() {
 
   // Gráfico de vendas por dia (últimos 14 dias)
   const days = lastNDays(14);
-  const totalsByDay = new Map<string, number>(days.map((d) => [d, 0]));
+  const totalsByDay = new Map<string, { totalCents: number; count: number }>(
+    days.map((d) => [d, { totalCents: 0, count: 0 }])
+  );
   for (const o of naoCancelados) {
     const day = toBrazilDateISO(new Date(o.created_at));
-    if (totalsByDay.has(day)) {
-      totalsByDay.set(day, (totalsByDay.get(day) ?? 0) + o.total_cents);
+    const atual = totalsByDay.get(day);
+    if (atual) {
+      atual.totalCents += o.total_cents;
+      atual.count += 1;
     }
   }
-  const chartData = days.map((date) => ({
-    date,
-    label: new Date(date + "T00:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
-    totalCents: totalsByDay.get(date) ?? 0,
-  }));
+  const chartData = days.map((date) => {
+    const v = totalsByDay.get(date)!;
+    return {
+      date,
+      label: new Date(date + "T00:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
+      totalCents: v.totalCents,
+      orderCount: v.count,
+    };
+  });
 
   // Tipo de atendimento, com ticket médio de cada um
   const tipoGrupos = new Map<string, { count: number; totalCents: number }>();

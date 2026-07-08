@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { formatarCentavos } from "@/lib/orders/fees";
 
-type DayPoint = { date: string; label: string; totalCents: number };
+type DayPoint = { date: string; label: string; totalCents: number; orderCount: number };
 
 export function RevenueChart({ data }: { data: DayPoint[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -32,9 +32,11 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
                     style={{ height: `${Math.max(heightPct, d.totalCents > 0 ? 2 : 0)}%` }}
                   />
                   {hovered === i && (
-                    <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-max -translate-x-1/2 rounded-lg bg-neutral-900 px-2 py-1 text-xs text-white shadow-lg">
-                      <p className="font-semibold">{formatarCentavos(d.totalCents)}</p>
-                      <p className="text-neutral-300">{d.label}</p>
+                    <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-max -translate-x-1/2 rounded-lg bg-neutral-900 px-3 py-2 text-xs text-white shadow-lg">
+                      <p className="text-sm font-semibold">{formatarCentavos(d.totalCents)}</p>
+                      <p className="text-neutral-300">
+                        {d.orderCount} venda{d.orderCount === 1 ? "" : "s"} · {d.label}
+                      </p>
                     </div>
                   )}
                 </div>
