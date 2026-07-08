@@ -1,15 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatarCentavos } from "@/lib/orders/fees";
 import { RevenueChart } from "@/components/admin/RevenueChart";
+import { toBrazilDateISO } from "@/lib/dates";
 
 export const revalidate = 0;
 
 function lastNDays(n: number): string[] {
   const days: string[] = [];
+  const now = new Date();
   for (let i = n - 1; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0, 10));
+    days.push(toBrazilDateISO(new Date(now.getTime() - i * 24 * 60 * 60 * 1000)));
   }
   return days;
 }
@@ -32,7 +32,7 @@ export default async function AdminDashboardPage() {
   const days = lastNDays(14);
   const totalsByDay = new Map<string, number>(days.map((d) => [d, 0]));
   for (const o of rows) {
-    const day = o.created_at.slice(0, 10);
+    const day = toBrazilDateISO(new Date(o.created_at));
     if (totalsByDay.has(day)) {
       totalsByDay.set(day, (totalsByDay.get(day) ?? 0) + o.total_cents);
     }

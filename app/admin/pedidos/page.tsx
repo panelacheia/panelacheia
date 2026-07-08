@@ -1,18 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { OrdersTable } from "@/components/admin/OrdersTable";
 import { OrdersFilterBar } from "@/components/admin/OrdersFilterBar";
+import { todayBrazilISO, brazilDayStartISO, brazilDayEndISO } from "@/lib/dates";
 import type { PaymentStatus } from "@/lib/types";
 
 export const revalidate = 0;
 
 function primeiroDiaMesISO() {
-  const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0, 10);
+  return `${todayBrazilISO().slice(0, 7)}-01`;
 }
 
 function ultimoDiaMesISO() {
-  const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().slice(0, 10);
+  const hoje = todayBrazilISO();
+  const [ano, mes] = hoje.slice(0, 7).split("-").map(Number);
+  const ultimoDia = new Date(Date.UTC(ano, mes, 0)).getUTCDate(); // dia 0 do próximo mês = último dia do atual
+  return `${hoje.slice(0, 7)}-${String(ultimoDia).padStart(2, "0")}`;
 }
 
 export default async function AdminPedidosPage({
@@ -38,8 +40,8 @@ export default async function AdminPedidosPage({
     .order("created_at", { ascending: false })
     .limit(200);
 
-  if (efetivoFrom) query = query.gte("created_at", `${efetivoFrom}T00:00:00`);
-  if (efetivoTo) query = query.lte("created_at", `${efetivoTo}T23:59:59`);
+  if (efetivoFrom) query = query.gte("created_at", brazilDayStartISO(efetivoFrom));
+  if (efetivoTo) query = query.lte("created_at", brazilDayEndISO(efetivoTo));
   if (efetivoPayment) query = query.eq("payment_status", efetivoPayment);
 
   const { data: orders } = await query;

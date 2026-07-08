@@ -3,11 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, Filter, CreditCard } from "lucide-react";
+import { todayBrazilISO } from "@/lib/dates";
 import type { PaymentStatus } from "@/lib/types";
-
-function hojeISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 export function OrdersFilterBar({
   defaultFrom,
@@ -33,7 +30,7 @@ export function OrdersFilterBar({
   }
 
   function handleHoje() {
-    const hoje = hojeISO();
+    const hoje = todayBrazilISO();
     setFrom(hoje);
     setTo(hoje);
     aplicar(hoje, hoje, payment);
