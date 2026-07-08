@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { removeBackground } from "@/lib/images/removeBackground";
 
 async function requireStaff() {
   const supabase = await createClient();
@@ -19,12 +20,16 @@ async function uploadImageIfPresent(
 ): Promise<string | null> {
   const file = formData.get("image") as File | null;
   if (file && file.size > 0) {
-    const ext = file.name.split(".").pop();
-    const path = `${crypto.randomUUID()}.${ext}`;
+    const original = Buffer.from(await file.arrayBuffer());
+    const processed = await removeBackground(original);
+    const semFundo = processed !== original;
 
-    const { error } = await supabase.storage.from("product-images").upload(path, file, {
+    const path = `${crypto.randomUUID()}.${semFundo ? "png" : (file.name.split(".").pop() ?? "jpg")}`;
+
+    const { error } = await supabase.storage.from("product-images").upload(path, processed, {
       cacheControl: "3600",
       upsert: false,
+      contentType: semFundo ? "image/png" : file.type || "image/jpeg",
     });
     if (error) throw new Error(`Falha ao enviar imagem: ${error.message}`);
 

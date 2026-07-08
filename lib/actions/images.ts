@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { removeBackground } from "@/lib/images/removeBackground";
 
 async function requireStaff() {
   const supabase = await createClient();
@@ -20,11 +21,15 @@ export async function uploadImages(formData: FormData) {
   if (!files.length) throw new Error("Nenhum arquivo selecionado.");
 
   for (const file of files) {
-    const ext = file.name.split(".").pop() ?? "jpg";
-    const path = `upload-${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("product-images").upload(path, file, {
+    const original = Buffer.from(await file.arrayBuffer());
+    const processed = await removeBackground(original);
+    const semFundo = processed !== original;
+
+    const path = `upload-${crypto.randomUUID()}.${semFundo ? "png" : (file.name.split(".").pop() ?? "jpg")}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, processed, {
       cacheControl: "3600",
       upsert: false,
+      contentType: semFundo ? "image/png" : file.type || "image/jpeg",
     });
     if (error) throw new Error(`Falha ao enviar "${file.name}": ${error.message}`);
   }
