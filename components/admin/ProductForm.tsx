@@ -5,8 +5,6 @@ import type { Category, Product, StorageImage } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { isRedirectError } from "@/lib/isRedirectError";
 
-type ImageResult = { original: string; thumbnail: string; title: string };
-
 export function ProductForm({
   product,
   categories,
@@ -20,12 +18,7 @@ export function ProductForm({
   const [erro, setErro] = useState<string | null>(null);
   const [nome, setNome] = useState(product?.name ?? "");
 
-  const [resultados, setResultados] = useState<ImageResult[]>([]);
-  const [buscandoFotos, setBuscandoFotos] = useState(false);
-  const [selecionando, setSelecionando] = useState<string | null>(null);
   const [imagemEscolhida, setImagemEscolhida] = useState<string | null>(null);
-  const [originalEscolhido, setOriginalEscolhido] = useState<string | null>(null);
-  const [preview, setPreview] = useState<ImageResult | null>(null);
   const [arquivoNome, setArquivoNome] = useState<string | null>(null);
   const [isPromo, setIsPromo] = useState(product?.is_promo ?? false);
   const [fotoAtualAmpliada, setFotoAtualAmpliada] = useState(false);
@@ -34,51 +27,6 @@ export function ProductForm({
   const [bibliotecaAberta, setBibliotecaAberta] = useState(false);
   const [carregandoBiblioteca, setCarregandoBiblioteca] = useState(false);
   const [imagensBiblioteca, setImagensBiblioteca] = useState<StorageImage[]>([]);
-
-  async function handleBuscarFotos() {
-    if (!nome.trim()) {
-      setErro("Digite o nome do produto antes de buscar fotos.");
-      return;
-    }
-    setErro(null);
-    setResultados([]);
-    setBuscandoFotos(true);
-    try {
-      const res = await fetch("/api/admin/product-image-search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: nome }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Não foi possível buscar fotos.");
-      setResultados(data.results);
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : "Não foi possível buscar fotos.");
-    } finally {
-      setBuscandoFotos(false);
-    }
-  }
-
-  async function handleEscolherFoto(original: string) {
-    setErro(null);
-    setSelecionando(original);
-    try {
-      const res = await fetch("/api/admin/product-image-select", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: original }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Não foi possível salvar essa imagem.");
-      setImagemEscolhida(data.url);
-      setOriginalEscolhido(original);
-      setPreview(null);
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : "Não foi possível salvar essa imagem.");
-    } finally {
-      setSelecionando(null);
-    }
-  }
 
   async function handleAbrirBiblioteca() {
     setErro(null);
@@ -98,7 +46,6 @@ export function ProductForm({
 
   function handleEscolherDaBiblioteca(img: StorageImage) {
     setImagemEscolhida(img.url);
-    setOriginalEscolhido(null);
     setArquivoNome(null);
     setBibliotecaAberta(false);
   }
@@ -249,14 +196,6 @@ export function ProductForm({
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={handleBuscarFotos}
-            disabled={buscandoFotos}
-            className="rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white disabled:opacity-60"
-          >
-            {buscandoFotos ? "Buscando..." : "Buscar fotos no Google"}
-          </button>
-          <button
-            type="button"
             onClick={handleAbrirBiblioteca}
             className="rounded-lg border border-brand-primary px-3 py-1.5 text-xs font-semibold text-brand-primary hover:bg-brand-primary hover:text-white"
           >
@@ -306,77 +245,6 @@ export function ProductForm({
                   ))}
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {resultados.length > 0 && (
-          <div className="mb-2">
-            <div className="grid grid-cols-4 gap-2 rounded-lg border border-neutral-200 p-2 sm:grid-cols-6">
-              {resultados.map((r) => (
-                <button
-                  key={r.original}
-                  type="button"
-                  onClick={() => setPreview(r)}
-                  disabled={selecionando !== null}
-                  title={r.title}
-                  className={`relative aspect-square overflow-hidden rounded border hover:border-brand-primary disabled:opacity-50 ${
-                    originalEscolhido === r.original ? "border-2 border-brand-primary" : "border-neutral-200"
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={r.thumbnail} alt={r.title} className="h-full w-full object-cover" />
-                  {selecionando === r.original && (
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-[10px] text-white">
-                      Salvando...
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => setResultados([])}
-              className="mt-1 text-xs text-neutral-500 hover:underline"
-            >
-              Ocultar resultados
-            </button>
-          </div>
-        )}
-
-        {preview && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-            onClick={() => setPreview(null)}
-          >
-            <div
-              className="flex max-h-full max-w-lg flex-col gap-3 rounded-xl bg-white p-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={preview.original}
-                alt={preview.title}
-                className="max-h-[60vh] w-full rounded-lg object-contain"
-              />
-              {preview.title && <p className="text-xs text-neutral-500">{preview.title}</p>}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPreview(null)}
-                  className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
-                >
-                  Voltar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleEscolherFoto(preview.original)}
-                  disabled={selecionando !== null}
-                  className="rounded-lg bg-brand-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
-                >
-                  {selecionando === preview.original ? "Salvando..." : "Usar esta imagem"}
-                </button>
-              </div>
             </div>
           </div>
         )}
