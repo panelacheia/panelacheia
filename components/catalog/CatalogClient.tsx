@@ -24,56 +24,62 @@ export function CatalogClient({ products }: { products: Product[] }) {
   }, [products, search, category]);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-4">
-      <div className="mb-4">
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar produto (ex: arroz, açúcar, picanha)"
-          className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none"
-        />
+    <div>
+      <div className="bg-brand-secondary px-4 py-2 text-center text-sm font-semibold text-white">
+        Pedido mínimo de R$ 80,00
       </div>
 
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-        <button
-          type="button"
-          onClick={() => setCategory(null)}
-          className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
-            category === null
-              ? "bg-brand-primary text-white"
-              : "bg-white text-neutral-700 border border-neutral-300"
-          }`}
-        >
-          Todos
-        </button>
-        {categories.map((cat) => (
+      <div className="mx-auto max-w-5xl px-4 py-4">
+        <div className="mb-4">
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar produto (ex: arroz, açúcar, picanha)"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none"
+          />
+        </div>
+
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
           <button
-            key={cat}
             type="button"
-            onClick={() => setCategory(cat)}
+            onClick={() => setCategory(null)}
             className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
-              category === cat
+              category === null
                 ? "bg-brand-primary text-white"
                 : "bg-white text-neutral-700 border border-neutral-300"
             }`}
           >
-            {cat}
+            Todos
           </button>
-        ))}
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="py-12 text-center text-neutral-500">
-          Nenhum produto encontrado para essa busca.
-        </p>
-      ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setCategory(cat)}
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ${
+                category === cat
+                  ? "bg-brand-primary text-white"
+                  : "bg-white text-neutral-700 border border-neutral-300"
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
-      )}
+
+        {filtered.length === 0 ? (
+          <p className="py-12 text-center text-neutral-500">
+            Nenhum produto encontrado para essa busca.
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            {filtered.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
