@@ -34,7 +34,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   function handleAdicionarClick() {
     if (isKg) {
-      setPeso(1);
+      setPeso(quantity);
       setFotoAmpliada(false);
       setPesoModalAberto(true);
     } else {
