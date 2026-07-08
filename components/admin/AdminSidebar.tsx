@@ -84,7 +84,7 @@ export function AdminSidebar({
           })}
         </nav>
 
-        <div className="px-3">
+        <div className="px-3 pb-4">
           <MaintenanceToggle initialEnabled={maintenanceMode} />
         </div>
 
