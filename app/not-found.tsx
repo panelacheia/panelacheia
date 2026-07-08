@@ -8,10 +8,7 @@ export default function NotFound() {
         <ShoppingBasket size={36} aria-hidden />
       </div>
 
-      <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-brand-secondary">
-        Erro 404
-      </p>
-      <h1 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
+      <h1 className="mt-6 text-2xl font-bold text-foreground sm:text-3xl">
         Essa página saiu da prateleira
       </h1>
       <p className="mt-3 max-w-md text-neutral-500">
