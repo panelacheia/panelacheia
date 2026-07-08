@@ -45,7 +45,6 @@ export function BulkUploadModal() {
           preco: r.preco ?? "",
           promocao: r.promocao ?? "",
           preco_antes: r.preco_antes ?? "",
-          ativo: r.ativo ?? "",
         }))
       );
       setResultado(result);
@@ -100,11 +99,14 @@ export function BulkUploadModal() {
               <p className="mb-2">
                 Envie um arquivo <strong>.csv</strong> com as colunas: <code>nome</code>,{" "}
                 <code>categoria</code>, <code>unidade</code> (un ou kg), <code>preco</code>,{" "}
-                <code>promocao</code> (sim/nao), <code>preco_antes</code> (só se em promoção) e{" "}
-                <code>ativo</code> (sim/nao).
+                <code>promocao</code> (sim/nao) e <code>preco_antes</code> (só se em promoção).
               </p>
               <p className="mb-2">
                 Se a <code>categoria</code> ainda não existir, ela é criada automaticamente.
+              </p>
+              <p className="mb-2">
+                Produtos importados entram <strong>desativados</strong> — ative cada um depois de
+                conferir os dados. Produtos com nome já existente são rejeitados.
               </p>
               <button
                 type="button"

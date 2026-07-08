@@ -9,7 +9,7 @@ export default async function AdminProdutosPage() {
   const { data } = await supabase
     .from("product")
     .select("*, category:category_id(name)")
-    .order("sort_order");
+    .order("name");
 
   const products = (data ?? []).map((p) => ({
     ...p,

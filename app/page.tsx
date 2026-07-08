@@ -10,7 +10,7 @@ export default async function HomePage() {
     .from("product")
     .select("*, category:category_id(name)")
     .eq("is_active", true)
-    .order("sort_order");
+    .order("name");
 
   if (error) {
     return (

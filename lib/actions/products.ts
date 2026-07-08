@@ -45,6 +45,18 @@ async function uploadImageIfPresent(
   return null;
 }
 
+async function findDuplicateProductName(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  name: string,
+  excludeId?: string
+): Promise<boolean> {
+  const { data } = await supabase.from("product").select("id, name");
+  const target = normalize(name);
+  return ((data ?? []) as { id: string; name: string }[]).some(
+    (p) => p.id !== excludeId && normalize(p.name) === target
+  );
+}
+
 function parseProductFields(formData: FormData) {
   const priceReais = parseFloat(String(formData.get("price")).replace(",", "."));
   const isPromo = formData.get("is_promo") === "on";
@@ -68,6 +80,11 @@ function parseProductFields(formData: FormData) {
 export async function createProduct(formData: FormData) {
   const supabase = await requireStaff();
   const fields = parseProductFields(formData);
+
+  if (await findDuplicateProductName(supabase, fields.name)) {
+    throw new Error(`Já existe um produto chamado "${fields.name}".`);
+  }
+
   const imageUrl = await uploadImageIfPresent(supabase, formData);
 
   const { error } = await supabase.from("product").insert({
@@ -84,6 +101,11 @@ export async function createProduct(formData: FormData) {
 export async function updateProduct(id: string, formData: FormData) {
   const supabase = await requireStaff();
   const fields = parseProductFields(formData);
+
+  if (await findDuplicateProductName(supabase, fields.name, id)) {
+    throw new Error(`Já existe um produto chamado "${fields.name}".`);
+  }
+
   const imageUrl = await uploadImageIfPresent(supabase, formData);
 
   const { error } = await supabase
@@ -117,7 +139,6 @@ export type BulkProductRow = {
   preco: string;
   promocao: string;
   preco_antes: string;
-  ativo: string;
 };
 
 export type BulkImportError = { row: number; message: string };
@@ -138,6 +159,12 @@ function parseSimNao(value: string, padrao: boolean): boolean {
 
 export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkImportResult> {
   const supabase = await requireStaff();
+  const { data: productsData } = await supabase.from("product").select("name");
+  const existingProductNames = new Set(
+    ((productsData ?? []) as { name: string }[]).map((p) => normalize(p.name))
+  );
+  const seenInBatch = new Set<string>();
+
   const { data: categoriesData } = await supabase.from("category").select("id, name");
   const categoryByNormalizedName = new Map<string, { id: string; name: string }>(
     ((categoriesData ?? []) as { id: string; name: string }[]).map((c) => [normalize(c.name), c])
@@ -187,6 +214,12 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
       return;
     }
 
+    const nomeKey = normalize(nome);
+    if (existingProductNames.has(nomeKey) || seenInBatch.has(nomeKey)) {
+      errors.push({ row: linha, message: `Produto "${nome}" já existe.` });
+      return;
+    }
+
     const nomeCategoria = row.categoria.trim();
     if (!nomeCategoria) {
       errors.push({ row: linha, message: "Categoria é obrigatória." });
@@ -224,13 +257,14 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
       originalPriceCents = Math.round(precoAntes * 100);
     }
 
+    seenInBatch.add(nomeKey);
     toInsert.push({
       name: nome,
       price_cents: Math.round(preco * 100),
       original_price_cents: originalPriceCents,
       unit: unidade,
       category_id: categoria.id,
-      is_active: parseSimNao(row.ativo, true),
+      is_active: false, // planilha sempre entra desativada; funcionário ativa após conferir
       is_promo: isPromo,
     });
   });

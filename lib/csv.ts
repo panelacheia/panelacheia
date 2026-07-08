@@ -60,8 +60,8 @@ export function parseCsv(text: string): CsvRow[] {
 }
 
 export function generateProductTemplateCsv(): string {
-  const headers = ["nome", "categoria", "unidade", "preco", "promocao", "preco_antes", "ativo"];
-  const exemplo1 = ["Açúcar Cristal União 1kg", "Mercearia", "un", "6.99", "nao", "", "sim"];
-  const exemplo2 = ["Banana Prata", "Hortifruti", "kg", "7.90", "sim", "9.90", "sim"];
+  const headers = ["nome", "categoria", "unidade", "preco", "promocao", "preco_antes"];
+  const exemplo1 = ["Açúcar Cristal União 1kg", "Mercearia", "un", "6.99", "nao", ""];
+  const exemplo2 = ["Banana Prata", "Hortifruti", "kg", "7.90", "sim", "9.90"];
   return [headers, exemplo1, exemplo2].map((row) => row.join(";")).join("\n");
 }
