@@ -10,12 +10,12 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
   const max = Math.max(1, ...data.map((d) => d.totalCents));
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-4">
-      <h2 className="mb-4 text-sm font-semibold text-neutral-600">Vendas nos últimos 14 dias</h2>
+    <div className="rounded-xl border border-neutral-200 bg-white p-3.5">
+      <h2 className="mb-3 text-sm font-semibold text-neutral-600">Vendas nos últimos 14 dias</h2>
 
       <div className="overflow-x-auto">
         <div className="min-w-[560px]">
-          <div className="relative flex h-48 items-end gap-1.5">
+          <div className="relative flex h-28 items-end gap-1.5">
             {data.map((d, i) => {
               const heightPct = (d.totalCents / max) * 100;
               return (

@@ -21,9 +21,9 @@ export function StatTile({
   tone?: Tone;
 }) {
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-4">
+    <div className="rounded-xl border border-neutral-200 bg-white p-3">
       <p className="text-xs font-medium text-neutral-500">{label}</p>
-      <p className={`mt-1 text-2xl font-bold ${TONE_CLASSES[tone]}`}>{value}</p>
+      <p className={`mt-0.5 text-xl font-bold ${TONE_CLASSES[tone]}`}>{value}</p>
       {secondary && <p className="mt-0.5 text-xs text-neutral-400">{secondary}</p>}
     </div>
   );

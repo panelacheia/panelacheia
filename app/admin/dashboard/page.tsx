@@ -231,7 +231,7 @@ export default async function AdminDashboardPage() {
   const produtosEmPromocao = produtos.filter((p) => p.is_promo).length;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <SectionTitle>Pedidos</SectionTitle>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
