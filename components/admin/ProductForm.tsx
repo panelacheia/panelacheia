@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { ImageOff } from "lucide-react";
 import type { Category, Product, StorageImage } from "@/lib/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { isRedirectError } from "@/lib/isRedirectError";
@@ -27,6 +28,7 @@ export function ProductForm({
   const [bibliotecaAberta, setBibliotecaAberta] = useState(false);
   const [carregandoBiblioteca, setCarregandoBiblioteca] = useState(false);
   const [imagensBiblioteca, setImagensBiblioteca] = useState<StorageImage[]>([]);
+  const [imagensComErro, setImagensComErro] = useState<Record<string, boolean>>({});
 
   async function handleAbrirBiblioteca() {
     setErro(null);
@@ -236,11 +238,23 @@ export function ProductForm({
                       key={img.name}
                       type="button"
                       onClick={() => handleEscolherDaBiblioteca(img)}
-                      title={img.name}
-                      className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary"
+                      disabled={imagensComErro[img.name]}
+                      title={imagensComErro[img.name] ? "Erro ao carregar essa imagem" : img.name}
+                      className="relative aspect-square overflow-hidden rounded border border-neutral-200 hover:border-brand-primary disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-neutral-200"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img.url} alt={img.name} className="h-full w-full object-cover" />
+                      {imagensComErro[img.name] ? (
+                        <div className="flex h-full w-full items-center justify-center bg-neutral-50 text-neutral-300">
+                          <ImageOff size={18} />
+                        </div>
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={img.url}
+                          alt={img.name}
+                          onError={() => setImagensComErro((prev) => ({ ...prev, [img.name]: true }))}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
                     </button>
                   ))}
                 </div>

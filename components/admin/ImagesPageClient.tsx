@@ -13,6 +13,7 @@ export function ImagesPageClient({ images }: { images: StorageImage[] }) {
   const [enviando, setEnviando] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<StorageImage | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
+  const [comErro, setComErro] = useState<Record<string, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const imagensFiltradas = images.filter((img) =>
@@ -120,12 +121,20 @@ export function ImagesPageClient({ images }: { images: StorageImage[] }) {
               className="group relative overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm"
             >
               <div className="relative aspect-square bg-neutral-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt={img.name}
-                  className="absolute inset-0 h-full w-full object-contain p-2"
-                />
+                {comErro[img.name] ? (
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-neutral-300">
+                    <ImageOff size={24} />
+                    <span className="text-[10px] font-medium text-neutral-400">Erro ao carregar</span>
+                  </div>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={img.url}
+                    alt={img.name}
+                    onError={() => setComErro((prev) => ({ ...prev, [img.name]: true }))}
+                    className="absolute inset-0 h-full w-full object-contain p-2"
+                  />
+                )}
               </div>
               <p className="truncate px-2 py-1.5 text-[11px] text-neutral-500" title={img.name}>
                 {img.name}
