@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Receipt, Package, Tags, Images, X } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
+import { MaintenanceToggle } from "./MaintenanceToggle";
 
 const NAV_ITEMS = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -14,7 +15,15 @@ const NAV_ITEMS = [
   { href: "/admin/imagens", label: "Imagens", icon: Images },
 ];
 
-export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function AdminSidebar({
+  open,
+  onClose,
+  maintenanceMode,
+}: {
+  open: boolean;
+  onClose: () => void;
+  maintenanceMode: boolean;
+}) {
   const pathname = usePathname();
   if (pathname === "/admin/login") return null;
 
@@ -74,6 +83,10 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
             );
           })}
         </nav>
+
+        <div className="px-3">
+          <MaintenanceToggle initialEnabled={maintenanceMode} />
+        </div>
 
         <div className="border-t border-white/10 px-3 py-4">
           <div className="rounded-xl bg-white/10 px-3 py-3">

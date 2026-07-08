@@ -19,6 +19,18 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient();
 
+  const { data: status } = await supabase
+    .from("store_status")
+    .select("maintenance_mode")
+    .eq("id", 1)
+    .single();
+  if (status?.maintenance_mode) {
+    return NextResponse.json(
+      { error: "Loja em manutenção no momento. Tente novamente em alguns minutos." },
+      { status: 503 }
+    );
+  }
+
   // Nunca confiar em preço/nome vindos do cliente: busca os dados reais e ativos no banco.
   const productIds = body.items.map((i) => i.productId);
   const { data: products, error: productsError } = await supabase
