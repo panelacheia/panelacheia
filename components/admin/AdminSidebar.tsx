@@ -77,7 +77,7 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
         <div className="border-t border-white/10 px-3 py-4">
           <div className="rounded-xl bg-white/10 px-3 py-3">
             <p className="text-xs text-white/50">Logado como</p>
-            <p className="mb-3 text-sm font-semibold text-white">Gabriel Sato</p>
+            <p className="mb-3 text-sm font-semibold text-white">MASTER</p>
             <LogoutButton />
           </div>
         </div>
