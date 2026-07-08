@@ -14,7 +14,16 @@ export function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white shadow-sm">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2">
-        <Link href="/" className="flex items-center">
+        <Link
+          href="/"
+          onClick={(e) => {
+            if (pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+          className="flex items-center"
+        >
           <Image
             src="/logos/panelacheia.png"
             alt="Panela Cheia Supermercado"
