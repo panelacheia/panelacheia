@@ -11,7 +11,9 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-3.5">
-      <h2 className="mb-3 text-sm font-semibold text-neutral-600">Vendas nos últimos 14 dias</h2>
+      <h2 className="mb-3 inline-block rounded-md bg-brand-primary px-2 py-1 text-xs font-semibold text-white">
+        Vendas nos últimos 14 dias
+      </h2>
 
       <div className="overflow-x-auto">
         <div className="min-w-[560px]">

@@ -21,7 +21,9 @@ export function RankedBarCard({
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-3.5">
-      <h2 className="mb-2.5 text-sm font-semibold text-neutral-600">{title}</h2>
+      <h2 className="mb-2.5 inline-block rounded-md bg-brand-primary px-2 py-1 text-xs font-semibold text-white">
+        {title}
+      </h2>
       {items.length === 0 ? (
         <p className="text-sm text-neutral-400">{emptyLabel}</p>
       ) : (

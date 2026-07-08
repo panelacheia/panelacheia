@@ -281,24 +281,6 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <SectionTitle>Vendas</SectionTitle>
-        <RevenueChart data={chartData} />
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <RankedBarCard title="Tipo de atendimento" items={tipoItems} />
-          <RankedBarCard title="Forma de pagamento" items={pagamentoItems} />
-        </div>
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <RankedBarCard title="Vendas por categoria" items={categoriaItems} />
-          <RankedBarCard title="Pedidos por dia da semana" items={semanaItems} />
-        </div>
-        <RankedBarCard
-          title="Mais vendidos (últimos 30 dias)"
-          items={maisVendidos}
-          emptyLabel="Nenhuma venda nos últimos 30 dias ainda."
-        />
-      </div>
-
-      <div className="flex flex-col gap-3">
         <SectionTitle>Clientes</SectionTitle>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <StatTile label="Clientes únicos" value={String(clientesUnicos)} tone="primary" />
@@ -309,11 +291,6 @@ export default async function AdminDashboardPage() {
             tone="primary"
           />
         </div>
-        <RankedBarCard
-          title="Melhores clientes"
-          items={melhoresClientes}
-          emptyLabel="Nenhum pedido ainda."
-        />
       </div>
 
       <div className="flex flex-col gap-3">
@@ -330,6 +307,31 @@ export default async function AdminDashboardPage() {
           <StatTile label="Produtos ativos" value={String(produtosAtivos)} tone="good" />
           <StatTile label="Produtos inativos" value={String(produtosInativos)} tone="primary" />
           <StatTile label="Em promoção" value={String(produtosEmPromocao)} tone="primary" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <SectionTitle>Vendas</SectionTitle>
+        <RevenueChart data={chartData} />
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <RankedBarCard title="Tipo de atendimento" items={tipoItems} />
+          <RankedBarCard title="Forma de pagamento" items={pagamentoItems} />
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <RankedBarCard title="Vendas por categoria" items={categoriaItems} />
+          <RankedBarCard title="Pedidos por dia da semana" items={semanaItems} />
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <RankedBarCard
+            title="Mais vendidos (últimos 30 dias)"
+            items={maisVendidos}
+            emptyLabel="Nenhuma venda nos últimos 30 dias ainda."
+          />
+          <RankedBarCard
+            title="Melhores clientes"
+            items={melhoresClientes}
+            emptyLabel="Nenhum pedido ainda."
+          />
         </div>
       </div>
     </div>
