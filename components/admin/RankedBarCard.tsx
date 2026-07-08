@@ -27,16 +27,16 @@ export function RankedBarCard({
       {items.length === 0 ? (
         <p className="text-sm text-neutral-400">{emptyLabel}</p>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2.5">
           {items.map((item) => (
             <div key={item.key}>
-              <div className="mb-0.5 flex items-center justify-between gap-2 text-xs">
-                <span className="truncate font-medium text-neutral-700">{item.label}</span>
-                <span className="shrink-0 text-neutral-500">
+              <div className="mb-1 flex items-center justify-between gap-2 text-sm">
+                <span className="truncate font-semibold text-neutral-900">{item.label}</span>
+                <span className="shrink-0 font-medium text-neutral-600">
                   {item.metricLabel} · {formatarCentavos(item.valueCents)}
                 </span>
               </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
                 <div
                   className="h-full rounded-full bg-brand-primary"
                   style={{ width: `${(item.barValue / max) * 100}%` }}

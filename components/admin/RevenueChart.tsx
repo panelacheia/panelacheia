@@ -42,7 +42,7 @@ export function RevenueChart({ data }: { data: DayPoint[] }) {
             })}
           </div>
 
-          <div className="mt-2 flex gap-1.5 text-[10px] text-neutral-400">
+          <div className="mt-2 flex gap-1.5 text-xs font-medium text-neutral-500">
             {data.map((d) => (
               <span key={d.date} className="flex-1 text-center">
                 {d.label.slice(0, 5)}
