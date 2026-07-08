@@ -262,6 +262,15 @@ export async function bulkCreateProducts(rows: BulkProductRow[]): Promise<BulkIm
         return;
       }
       originalPriceCents = Math.round(precoAntes * 100);
+    } else if (row.preco_antes.trim()) {
+      // "preco_antes" preenchido com "promocao" = nao provavelmente é erro de preenchimento
+      // (planilha esquecida ou copiada errada) — melhor travar do que descartar em silêncio.
+      errors.push({
+        row: linha,
+        message:
+          '"preco_antes" preenchido mas "promocao" não está como "sim". Marque a promoção ou apague o preco_antes.',
+      });
+      return;
     }
 
     seenInBatch.add(nomeKey);
